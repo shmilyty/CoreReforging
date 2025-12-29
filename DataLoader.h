@@ -1,4 +1,7 @@
 // DataLoader.h (或者直接写在 main.cpp 上方)
+#ifndef DATALOADER_H
+#define DATALOADER_H
+
 #include <fstream>
 #include <iostream>
 #include <vector>
@@ -9,6 +12,8 @@ using json = nlohmann::json;
 using namespace std;
 
 // 简单的怪物类结构 (示例)
+#ifndef MONSTER_STRUCT_DEFINED
+#define MONSTER_STRUCT_DEFINED
 struct Monster {
     int id;
     string name;
@@ -16,6 +21,7 @@ struct Monster {
     int atk;
     int exp;
 };
+#endif
 
 class DataLoader {
 private:
@@ -86,7 +92,17 @@ public:
 
         try {
             json data = json::parse(f);
-            for (auto& item : data) {
+            
+            // 检查是否有 "monsters" 键（gamedata.json 格式）
+            json monsterArray;
+            if (data.contains("monsters")) {
+                monsterArray = data["monsters"];
+            } else {
+                // 如果没有，假设整个文件就是怪物数组（enemy.json 格式）
+                monsterArray = data;
+            }
+            
+            for (auto& item : monsterArray) {
                 Monster m;
                 m.id = item["id"];
                 m.name = item["name"];
@@ -103,3 +119,5 @@ public:
         return result;
     }
 };
+
+#endif // DATALOADER_H

@@ -13,32 +13,8 @@
 #include "GameCore.h"   // 核心类定义 (Equipment, Weapon, Armor)
 #include "DataLoader.h" // 数据加载器
 #include "SaveManager.h"
+#include "Adventure.h"
 using namespace std;
-
-// ==========================================
-// [装备管理系统]
-// ==========================================
-struct EquipmentSlot {
-    Armor* equippedArmor = nullptr;
-    vector<Weapon*> equippedWeapons;
-    
-    int getTotalWeight() const {
-        int total = 0;
-        for (auto w : equippedWeapons) {
-            if (w) total += w->getWeight();
-        }
-        return total;
-    }
-    
-    int getEffectiveDodgeRate() const {
-        if (!equippedArmor) return 0;
-        int capacity = equippedArmor->getCapacity();
-        int weight = getTotalWeight();
-        // 如果重量超过60%承重，闪避率强制为0
-        if (weight > capacity * 0.6) return 0;
-        return equippedArmor->getDodgeRate();
-    }
-};
 
 // ==========================================
 // [界面模块] Display Class
@@ -104,16 +80,18 @@ public:
     // 显示主菜单
     static void showMenu(int exp) {
         cout << "\n===============================" << endl;
-        cout << "   钢之魂：核心重构 (Ver 0.3)   " << endl;
+        cout << "   钢之魂：核心重构 (Ver 1.0)   " << endl;
         cout << "===============================" << endl;
         cout << "当前 EXP: " << exp << endl;
         cout << "-------------------------------" << endl;
         cout << "[1] 查看机库 (Inventory)" << endl;
         cout << "[2] 装备管理 (Equip)" << endl;
         cout << "[3] 装备升级 (Upgrade)" << endl;
+        cout << "[4] 出发冒险 (Adventure)" << endl;
+        cout << "[5] 手动存档 (Save)" << endl;
         cout << "[9] 测试：获得100 EXP" << endl;  // 测试用
-        // cout << "[4] 装备合成实验 (Synthesis)" << endl;  // 暂时隐藏
-        // cout << "[5] 查看怪物图鉴 (Bestiary)" << endl;  // 暂时隐藏
+        // cout << "[6] 装备合成实验 (Synthesis)" << endl;  // 暂时隐藏
+        // cout << "[7] 查看怪物图鉴 (Bestiary)" << endl;  // 暂时隐藏
         cout << "[0] 退出系统 (Exit)" << endl;
         cout << "-------------------------------" << endl;
         cout << ">>> 请输入指令: ";
@@ -185,8 +163,11 @@ int main() {
 
     string playerName = "User";
     int playerExp = 0;
+    int equippedArmorId = -1;
+    vector<int> equippedWeaponIds;
+    
     // 尝试加载存档
-    vector<Equipment*> inventory = SaveManager::loadSave(slot, playerName, playerExp);
+    vector<Equipment*> inventory = SaveManager::loadSave(slot, playerName, playerExp, equippedArmorId, equippedWeaponIds);
 
     // 如果是空背包（说明是新存档），给个初始装备
     if (inventory.empty()) {
@@ -221,10 +202,34 @@ int main() {
     system("cls");
     // 2. 数据加载 (Data Loading)
     // 加载怪物数据用于图鉴显示
-    vector<Monster> monsters = DataLoader::loadMonsters("enemy.json");
+    vector<Monster> monsters = DataLoader::loadMonsters("gamedata.json");
     
     // 初始化装备槽
     EquipmentSlot equipSlot;
+    
+    // 恢复装备配置
+    if (equippedArmorId != -1) {
+        for (auto item : inventory) {
+            if (item->getId() == equippedArmorId) {
+                equipSlot.equippedArmor = dynamic_cast<Armor*>(item);
+                cout << "[存档] 已恢复装备的装甲: " << item->getName() << endl;
+                break;
+            }
+        }
+    }
+    
+    for (int weaponId : equippedWeaponIds) {
+        for (auto item : inventory) {
+            if (item->getId() == weaponId) {
+                Weapon* weapon = dynamic_cast<Weapon*>(item);
+                if (weapon) {
+                    equipSlot.equippedWeapons.push_back(weapon);
+                    cout << "[存档] 已恢复装备的武器: " << item->getName() << endl;
+                }
+                break;
+            }
+        }
+    }
 
     // 3. 游戏主循环 (Game Loop)
     bool isRunning = true;
@@ -243,13 +248,17 @@ int main() {
         system("cls");
         switch (choice) {
             case 0: // 退出
+            {
                 isRunning = false;
-                SaveManager::saveGame(slot, playerName, inventory, playerExp);
+                // 保存游戏，包括装备配置
+                vector<Equipment*> equippedWeaponsVec(equipSlot.equippedWeapons.begin(), equipSlot.equippedWeapons.end());
+                SaveManager::saveGame(slot, playerName, inventory, playerExp, equipSlot.equippedArmor, equippedWeaponsVec);
                 SaveManager::cleanUp();
                 cout << "正在将意识上传至云端..."<<endl;
                 cout << "正在断开神经连接... 再见！" << endl;
                 system("pause");
                 break;
+            }
 
             case 1: // 查看背包
                 cout << "\n=== 当前机库库存 (" << inventory.size() << ") ===" << endl;
@@ -587,27 +596,58 @@ int main() {
                 break;
             }
 
+            case 4: // 出发冒险
+            {
+                cout << "\n=== 冒险准备 ===" << endl;
+                
+                // 检查是否装备了装甲和武器
+                if (!equipSlot.equippedArmor) {
+                    cout << "【警告】未装备装甲！" << endl;
+                    cout << "建议先装备装甲再出发冒险。" << endl;
+                    cout << "\n是否继续？(1=是, 0=否): ";
+                    int confirm;
+                    cin >> confirm;
+                    if (confirm != 1) {
+                        break;
+                    }
+                }
+                
+                if (equipSlot.equippedWeapons.empty()) {
+                    cout << "【警告】未装备武器！" << endl;
+                    cout << "没有武器将无法造成伤害！" << endl;
+                    cout << "\n是否继续？(1=是, 0=否): ";
+                    int confirm;
+                    cin >> confirm;
+                    if (confirm != 1) {
+                        break;
+                    }
+                }
+                
+                // 开始冒险
+                AdventureSystem adventure(monsters, &equipSlot, playerExp);
+                adventure.startAdventure(inventory);
+                break;
+            }
+            
+            case 5: // 手动存档
+            {
+                cout << "\n=== 手动存档 ===" << endl;
+                cout << "正在保存游戏进度..." << endl;
+                vector<Equipment*> equippedWeaponsVec(equipSlot.equippedWeapons.begin(), equipSlot.equippedWeapons.end());
+                SaveManager::saveGame(slot, playerName, inventory, playerExp, equipSlot.equippedArmor, equippedWeaponsVec);
+                cout << "存档完成！" << endl;
+                system("pause");
+                break;
+            }
+            
             case 9: // 测试：获得EXP
                 playerExp += 100;
                 cout << "获得 100 EXP！当前 EXP: " << playerExp << endl;
                 system("pause");
                 break;
 
-            // case 4: // 合成测试 (已隐藏)
-            // case 5: // 查看怪物 (已隐藏)
-                cout << "\n=== 废土生物数据库 ===" << endl;
-                if (monsters.empty()) {
-                    cout << "未加载任何怪物数据 (enemy.json 缺失)" << endl;
-                } else {
-                    for (const auto& m : monsters) {
-                        cout << "ID: " << setw(3) << m.id 
-                             << " | 名称: " << left << setw(15) << m.name 
-                             << " | HP: " << setw(5) << m.hp 
-                             << " | 攻击: " << m.atk << endl;
-                    }
-                }
-                system("pause");
-                break;
+            // case 6: // 合成测试 (已隐藏)
+            // case 7: // 查看怪物 (已隐藏)
 
             default:
                 cout << "未知指令，请重新输入。" << endl;

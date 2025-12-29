@@ -1,8 +1,16 @@
 {
-    "exp": 100,
+    "equipment_config": {
+        "armor_id": 201,
+        "weapon_ids": [
+            101,
+            102,
+            103
+        ]
+    },
+    "exp": 3075,
     "inventory": [
         {
-            "lv": 1,
+            "lv": 3,
             "rar": 1,
             "tid": 201
         },
@@ -12,17 +20,17 @@
             "tid": 203
         },
         {
-            "lv": 1,
+            "lv": 3,
             "rar": 1,
             "tid": 101
         },
         {
-            "lv": 1,
+            "lv": 3,
             "rar": 2,
             "tid": 102
         },
         {
-            "lv": 1,
+            "lv": 3,
             "rar": 0,
             "tid": 103
         }

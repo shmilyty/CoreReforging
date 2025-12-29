@@ -43,12 +43,18 @@ public:
     int getLevel() const;
     Rarity getRarity() const;
     
-    // 运算符重载：实现“合成”功能
+    // 运算符重载：实现"合成"功能
     // 声明：两个 Equipment 指针的内容相加，返回一个新的 Equipment 指针
     Equipment* operator+(const Equipment& other);
 
     // 原型模式：用于克隆对象，辅助合成
     virtual Equipment* clone(string newName, int newLv) const = 0;
+    
+    // 升级系统接口
+    virtual bool canLevelUp() const = 0;
+    virtual int getUpgradeCost() const = 0;
+    virtual void levelUp() = 0;
+    virtual int getMaxLevel() const { return 3; }
 };
 
 // 武器类

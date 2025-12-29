@@ -71,7 +71,8 @@ public:
     }
 
     // 2. 保存存档 (Serialization)
-    static void saveGame(int slotIndex, const string& playerName, const vector<Equipment*>& inventory, int playerExp = 0) {
+    static void saveGame(int slotIndex, const string& playerName, const vector<Equipment*>& inventory, int playerExp, 
+                        Equipment* equippedArmor, const vector<Equipment*>& equippedWeapons) {
         json saveJson;
         saveJson["player_name"] = playerName;
         saveJson["exp"] = playerExp;
@@ -86,6 +87,21 @@ public:
             invArray.push_back(itemJson);
         }
         saveJson["inventory"] = invArray;
+        
+        // 保存装备配置
+        json equipConfig;
+        if (equippedArmor) {
+            equipConfig["armor_id"] = equippedArmor->getId();
+        } else {
+            equipConfig["armor_id"] = -1;  // -1 表示未装备
+        }
+        
+        json weaponIds = json::array();
+        for (auto weapon : equippedWeapons) {
+            weaponIds.push_back(weapon->getId());
+        }
+        equipConfig["weapon_ids"] = weaponIds;
+        saveJson["equipment_config"] = equipConfig;
 
         // 写入文件到 saves 文件夹
         string filename = "saves/save_slot_" + to_string(slotIndex) + ".json";
@@ -95,7 +111,8 @@ public:
     }
 
     // 3. 加载存档 (Deserialization)
-    static vector<Equipment*> loadSave(int slotIndex, string& playerName, int& playerExp) {
+    static vector<Equipment*> loadSave(int slotIndex, string& playerName, int& playerExp, 
+                                       int& equippedArmorId, vector<int>& equippedWeaponIds) {
         vector<Equipment*> result;
         string filename = "saves/save_slot_" + to_string(slotIndex) + ".json";
         ifstream f(filename);
@@ -103,6 +120,8 @@ public:
         if (!f.is_open()) {
             cout << "[提示] 存档槽 " << slotIndex << " 为空，将开始新游戏。" << endl;
             playerExp = 0;
+            equippedArmorId = -1;
+            equippedWeaponIds.clear();
             return result; // 返回空背包
         }
 
@@ -124,6 +143,21 @@ public:
                 result.push_back(newItem);
             }
         }
+        
+        // 加载装备配置
+        equippedArmorId = -1;
+        equippedWeaponIds.clear();
+        if (j.contains("equipment_config")) {
+            json equipConfig = j["equipment_config"];
+            equippedArmorId = equipConfig.value("armor_id", -1);
+            
+            if (equipConfig.contains("weapon_ids")) {
+                for (auto& weaponId : equipConfig["weapon_ids"]) {
+                    equippedWeaponIds.push_back(weaponId);
+                }
+            }
+        }
+        
         cout << "[存档] 读取存档槽 " << slotIndex << " 成功！" << endl;
         return result;
     }

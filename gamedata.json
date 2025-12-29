@@ -1,0 +1,48 @@
+{
+  "monsters": [
+    { "id": 1001, "name": "废铁史莱姆", "hp": 50, "atk": 5, "exp": 10 },
+    { "id": 1002, "name": "狂暴挖掘机", "hp": 500, "atk": 40, "exp": 150 }
+  ],
+  "equipments": [
+    { 
+      "id": 101, "type": "weapon", "name": "制式步枪", 
+      "rarity": "STANDARD", "faction": "共和国",
+      "atk": 50, "crit_rate": 10, "atk_speed": 2, "weight": 3
+    },
+    { 
+      "id": 102, "type": "weapon", "name": "等离子光剑", 
+      "rarity": "MILITARY", "faction": "帝国",
+      "atk": 120, "crit_rate": 25, "atk_speed": 1, "weight": 5
+    },
+    { 
+      "id": 103, "type": "weapon", "name": "生锈的铁管", 
+      "rarity": "BROKEN", "faction": "废土",
+      "atk": 15, "crit_rate": 5, "atk_speed": 3, "weight": 2
+    },
+    { 
+      "id": 104, "type": "weapon", "name": "传奇狙击炮", 
+      "rarity": "LEGENDARY", "faction": "共和国",
+      "atk": 300, "crit_rate": 50, "atk_speed": 5, "weight": 8
+    },
+    { 
+      "id": 201, "type": "armor", "name": "皮革背心", 
+      "rarity": "STANDARD", "faction": "帝国",
+      "hp": 200, "dodge_rate": 10, "capacity": 10
+    },
+    { 
+      "id": 202, "type": "armor", "name": "反应堆外壳", 
+      "rarity": "MILITARY", "faction": "共和国",
+      "hp": 500, "dodge_rate": 15, "capacity": 15
+    },
+    { 
+      "id": 203, "type": "armor", "name": "破损铁甲", 
+      "rarity": "BROKEN", "faction": "废土",
+      "hp": 100, "dodge_rate": 5, "capacity": 5
+    },
+    { 
+      "id": 204, "type": "armor", "name": "泰坦机甲", 
+      "rarity": "LEGENDARY", "faction": "帝国",
+      "hp": 1000, "dodge_rate": 25, "capacity": 20
+    }
+  ]
+}

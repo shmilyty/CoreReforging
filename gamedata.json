@@ -46,6 +46,28 @@
       "atk_speed": 1,
       "weight": 12
     },
+    {
+      "id": 106,
+      "type": "weapon",
+      "name": "猪",
+      "rarity": "LEGENDARY",
+      "faction": "自然",
+      "atk": 10000,
+      "crit_rate": 1,
+      "atk_speed": 7,
+      "weight": 20
+    },
+    {
+      "id": 107,
+      "type": "weapon",
+      "name": "左轮手枪",
+      "rarity": "STANDARD",
+      "faction": "废土",
+      "atk": 100,
+      "crit_rate": 100,
+      "atk_speed": 1,
+      "weight": 12
+    },
     { 
       "id": 201, "type": "armor", "name": "皮革背心", 
       "rarity": "STANDARD", "faction": "帝国",

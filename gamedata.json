@@ -24,10 +24,27 @@
       "rarity": "BROKEN", "faction": "废土",
       "atk": 15, "crit_rate": 5, "atk_speed": 3, "weight": 2
     },
-    { 
-      "id": 104, "type": "weapon", "name": "传奇狙击炮", 
-      "rarity": "LEGENDARY", "faction": "共和国",
-      "atk": 300, "crit_rate": 50, "atk_speed": 5, "weight": 8
+    {
+      "id": 104,
+      "type": "weapon",
+      "name": "传奇狙击炮",
+      "rarity": "LEGENDARY",
+      "faction": "共和国",
+      "atk": 300,
+      "crit_rate": 50,
+      "atk_speed": 5,
+      "weight": 8
+    },
+    {
+      "id": 105,
+      "type": "weapon",
+      "name": "加特林机枪",
+      "rarity": "MILITARY",
+      "faction": "帝国",
+      "atk": 100,
+      "crit_rate": 100,
+      "atk_speed": 1,
+      "weight": 12
     },
     { 
       "id": 201, "type": "armor", "name": "皮革背心", 

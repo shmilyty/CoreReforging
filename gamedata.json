@@ -54,7 +54,7 @@
       "type": "weapon",
       "name": "猪",
       "rarity": "LEGENDARY",
-      "faction": "自然",
+      "faction": "猪",
       "atk": 10000,
       "crit_rate": 1,
       "atk_speed": 7,

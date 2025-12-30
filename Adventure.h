@@ -12,6 +12,7 @@
 #include <ctime>
 #include <windows.h>
 #include "GameCore.h"
+#include "Shop.h"
 
 using namespace std;
 
@@ -101,6 +102,7 @@ private:
     AdventureStats stats;
     int difficultyLevel;  // 难度等级（经过的篝火数）
     int battlesUntilCampfire;  // 距离下一个篝火的战斗数
+    Shop* campfireShop;  // 篝火商店
     
     // 随机数生成器
     mt19937 rng;
@@ -420,6 +422,57 @@ private:
         system("pause");
     }
     
+    // 篝火商店
+    void visitCampfireShop(vector<Equipment*>& inventory) {
+        system("cls");
+        cout << "\n=== 篝火 - 商店 ===" << endl;
+        showAdventureStatus();
+        
+        if (!campfireShop) {
+            cout << "\n[错误] 商店未初始化！" << endl;
+            system("pause");
+            return;
+        }
+        
+        // 如果需要刷新，刷新商店
+        if (campfireShop->isNeedsRefresh()) {
+            campfireShop->refresh();
+        }
+        
+        while (true) {
+            cout << "\n";
+            campfireShop->display();
+            
+            // 计算可用EXP
+            int availableExp = playerExp + stats.totalExpGained - stats.totalExpSpent;
+            cout << "\n当前可用 EXP: " << availableExp << endl;
+            cout << "\n[1-3] 购买对应商品 | [0] 返回" << endl;
+            cout << ">>> 请选择: ";
+            
+            int choice;
+            cin >> choice;
+            
+            if (choice == 0) {
+                break;
+            } else if (choice >= 1 && choice <= 3) {
+                // 临时增加 EXP 用于购买
+                int tempExp = availableExp;
+                if (campfireShop->buyItem(choice - 1, tempExp, inventory)) {
+                    // 购买成功，计算实际消耗
+                    int spent = availableExp - tempExp;
+                    stats.totalExpSpent += spent;
+                    cout << "\n[提示] 装备已添加到背包！" << endl;
+                }
+                system("pause");
+                system("cls");
+                cout << "\n=== 篝火 - 商店 ===" << endl;
+                showAdventureStatus();
+            } else {
+                cout << "无效选项！" << endl;
+            }
+        }
+    }
+    
     // 篝火休息
     bool campfireRest(vector<Equipment*>& inventory) {
         system("cls");
@@ -440,8 +493,9 @@ private:
             cout << "\n篝火选项：" << endl;
             cout << "[1] 装备管理" << endl;
             cout << "[2] 装备升级" << endl;
-            cout << "[3] 继续冒险" << endl;
-            cout << "[4] 传送回基地（结束冒险）" << endl;
+            cout << "[3] 访问商店" << endl;
+            cout << "[4] 继续冒险" << endl;
+            cout << "[5] 传送回基地（结束冒险）" << endl;
             cout << ">>> 请选择: ";
             
             int choice;
@@ -459,11 +513,16 @@ private:
                     break;
                     
                 case 3:
+                    // 访问商店
+                    visitCampfireShop(inventory);
+                    break;
+                    
+                case 4:
                     // 继续冒险
                     battlesUntilCampfire = 3;
                     return true;
                     
-                case 4:
+                case 5:
                     // 返回基地
                     return false;
                     
@@ -579,9 +638,9 @@ private:
     }
 
 public:
-    AdventureSystem(vector<Monster> monsters, EquipmentSlot* equipment, int& exp)
+    AdventureSystem(vector<Monster> monsters, EquipmentSlot* equipment, int& exp, Shop* shop)
         : allMonsters(monsters), playerEquipment(equipment), playerExp(exp),
-          difficultyLevel(0), battlesUntilCampfire(3) {
+          difficultyLevel(0), battlesUntilCampfire(3), campfireShop(shop) {
         
         // 初始化随机数生成器
         rng.seed(static_cast<unsigned int>(time(nullptr)));
@@ -686,6 +745,12 @@ public:
             cout << "  本次冒险收支平衡" << endl;
         }
         cout << "  当前总 EXP: " << playerExp << endl;
+        
+        // 标记篝火商店需要刷新（下次冒险时刷新）
+        if (campfireShop) {
+            campfireShop->markNeedsRefresh();
+        }
+        
         system("pause");
     }
 };

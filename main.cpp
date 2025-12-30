@@ -14,6 +14,7 @@
 #include "DataLoader.h" // 数据加载器
 #include "SaveManager.h"
 #include "Adventure.h"
+#include "Shop.h"
 using namespace std;
 
 // ==========================================
@@ -88,10 +89,11 @@ public:
         cout << "[2] 装备管理 (Equip)" << endl;
         cout << "[3] 装备升级 (Upgrade)" << endl;
         cout << "[4] 出发冒险 (Adventure)" << endl;
-        cout << "[5] 手动存档 (Save)" << endl;
+        cout << "[5] 访问商店 (Shop)" << endl;
+        cout << "[6] 手动存档 (Save)" << endl;
         cout << "[9] 测试：获得100 EXP" << endl;  // 测试用
-        // cout << "[6] 装备合成实验 (Synthesis)" << endl;  // 暂时隐藏
-        // cout << "[7] 查看怪物图鉴 (Bestiary)" << endl;  // 暂时隐藏
+        // cout << "[7] 装备合成实验 (Synthesis)" << endl;  // 暂时隐藏
+        // cout << "[8] 查看怪物图鉴 (Bestiary)" << endl;  // 暂时隐藏
         cout << "[0] 退出系统 (Exit)" << endl;
         cout << "-------------------------------" << endl;
         cout << ">>> 请输入指令: ";
@@ -140,6 +142,47 @@ const string Display::COLOR_WHITE = "\033[37m";
 const string Display::COLOR_GREEN = "\033[32m";
 const string Display::COLOR_RED = "\033[31m";
 const string Display::COLOR_YELLOW = "\033[33m";
+
+// ==========================================
+// [商店状态管理] Shop State Functions
+// ==========================================
+void saveShopStates(int slotIndex, Shop& baseShop, Shop& campfireShop) {
+    json shopJson;
+    shopJson["base_shop"] = baseShop.toJson();
+    shopJson["campfire_shop"] = campfireShop.toJson();
+    
+    string filename = "saves/shop_slot_" + to_string(slotIndex) + ".json";
+    ofstream f(filename);
+    if (f.is_open()) {
+        f << shopJson.dump(4);
+        cout << "[存档] 商店状态已保存。" << endl;
+    }
+}
+
+void loadShopStates(int slotIndex, Shop& baseShop, Shop& campfireShop, const vector<Equipment*>& templates) {
+    string filename = "saves/shop_slot_" + to_string(slotIndex) + ".json";
+    ifstream f(filename);
+    
+    if (!f.is_open()) {
+        // 如果没有商店存档，初始化为新商店
+        baseShop.refresh();
+        return;
+    }
+    
+    try {
+        json shopJson = json::parse(f);
+        if (shopJson.contains("base_shop")) {
+            baseShop.fromJson(shopJson["base_shop"], templates);
+        }
+        if (shopJson.contains("campfire_shop")) {
+            campfireShop.fromJson(shopJson["campfire_shop"], templates);
+        }
+        cout << "[存档] 商店状态已恢复。" << endl;
+    } catch (json::parse_error& e) {
+        cout << "[警告] 商店存档解析失败，将重新初始化。" << endl;
+        baseShop.refresh();
+    }
+}
 
 // ==========================================
 // [主程序] Main Function
@@ -207,6 +250,14 @@ int main() {
     // 初始化装备槽
     EquipmentSlot equipSlot;
     
+    // 初始化基地商店和篝火商店
+    vector<Equipment*> allEquipmentTemplates = SaveManager::getAllEquipmentTemplates();
+    Shop baseShop(allEquipmentTemplates);
+    Shop campfireShop(allEquipmentTemplates);
+    
+    // 加载商店状态
+    loadShopStates(slot, baseShop, campfireShop, allEquipmentTemplates);
+    
     // 恢复装备配置
     if (equippedArmorId != -1) {
         for (auto item : inventory) {
@@ -253,6 +304,8 @@ int main() {
                 // 保存游戏，包括装备配置
                 vector<Equipment*> equippedWeaponsVec(equipSlot.equippedWeapons.begin(), equipSlot.equippedWeapons.end());
                 SaveManager::saveGame(slot, playerName, inventory, playerExp, equipSlot.equippedArmor, equippedWeaponsVec);
+                // 保存商店状态
+                saveShopStates(slot, baseShop, campfireShop);
                 SaveManager::cleanUp();
                 cout << "正在将意识上传至云端..."<<endl;
                 cout << "正在断开神经连接... 再见！" << endl;
@@ -624,17 +677,58 @@ int main() {
                 }
                 
                 // 开始冒险
-                AdventureSystem adventure(monsters, &equipSlot, playerExp);
+                AdventureSystem adventure(monsters, &equipSlot, playerExp, &campfireShop);
                 adventure.startAdventure(inventory);
+                
+                // 冒险结束后，标记基地商店需要刷新
+                baseShop.markNeedsRefresh();
                 break;
             }
             
-            case 5: // 手动存档
+            case 5: // 访问商店
+            {
+                system("cls");
+                cout << "\n=== 基地商店 ===" << endl;
+                
+                // 如果需要刷新，刷新商店
+                if (baseShop.isNeedsRefresh()) {
+                    baseShop.refresh();
+                }
+                
+                while (true) {
+                    cout << "\n";
+                    baseShop.display();
+                    cout << "\n当前 EXP: " << playerExp << endl;
+                    cout << "\n[1-3] 购买对应商品 | [0] 返回主菜单" << endl;
+                    cout << ">>> 请选择: ";
+                    
+                    int shopChoice;
+                    cin >> shopChoice;
+                    
+                    if (shopChoice == 0) {
+                        break;
+                    } else if (shopChoice >= 1 && shopChoice <= 3) {
+                        if (baseShop.buyItem(shopChoice - 1, playerExp, inventory)) {
+                            cout << "\n[提示] 装备已添加到背包！" << endl;
+                        }
+                        system("pause");
+                        system("cls");
+                        cout << "\n=== 基地商店 ===" << endl;
+                    } else {
+                        cout << "无效选项！" << endl;
+                    }
+                }
+                break;
+            }
+            
+            case 6: // 手动存档
             {
                 cout << "\n=== 手动存档 ===" << endl;
                 cout << "正在保存游戏进度..." << endl;
                 vector<Equipment*> equippedWeaponsVec(equipSlot.equippedWeapons.begin(), equipSlot.equippedWeapons.end());
                 SaveManager::saveGame(slot, playerName, inventory, playerExp, equipSlot.equippedArmor, equippedWeaponsVec);
+                // 保存商店状态
+                saveShopStates(slot, baseShop, campfireShop);
                 cout << "存档完成！" << endl;
                 system("pause");
                 break;

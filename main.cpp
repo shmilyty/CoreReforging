@@ -8,6 +8,8 @@
 #include <vector>
 #include <cstdlib>    // 用于 system("cls")
 #include <limits>     // 用于清空输入缓冲区
+#include <algorithm>  // 用于 remove
+#include <ctime>      // 用于 time
 #include <windows.h>
 // --- 引入自定义头文件 ---
 #include "GameCore.h"   // 核心类定义 (Equipment, Weapon, Armor)
@@ -79,20 +81,20 @@ public:
     }
 
     // 显示主菜单
-    static void showMenu(int exp) {
+    static void showMenu(const string& playerName, int exp) {
         cout << "\n===============================" << endl;
-        cout << "   钢之魂：核心重构 (Ver 1.0)   " << endl;
+        cout << "   钢之魂：核心重构 (Ver 2.0)   " << endl;
         cout << "===============================" << endl;
-        cout << "当前 EXP: " << exp << endl;
+        cout << "驾驶员: " << playerName << " | EXP: " << exp << endl;
         cout << "-------------------------------" << endl;
         cout << "[1] 查看机库 (Inventory)" << endl;
         cout << "[2] 装备管理 (Equip)" << endl;
         cout << "[3] 装备升级 (Upgrade)" << endl;
         cout << "[4] 出发冒险 (Adventure)" << endl;
         cout << "[5] 访问商店 (Shop)" << endl;
-        cout << "[6] 手动存档 (Save)" << endl;
+        cout << "[6] 装备合并 (Merge)" << endl;
+        cout << "[7] 手动存档 (Save)" << endl;
         // cout << "[9] 测试：获得100 EXP" << endl;  // 测试用
-        // cout << "[7] 装备合成实验 (Synthesis)" << endl;  // 暂时隐藏
         // cout << "[8] 查看怪物图鉴 (Bestiary)" << endl;  // 暂时隐藏
         cout << "[0] 退出系统 (Exit)" << endl;
         cout << "-------------------------------" << endl;
@@ -301,7 +303,7 @@ int main() {
     // 3. 游戏主循环 (Game Loop)
     bool isRunning = true;
     while (isRunning) {
-        Display::showMenu(playerExp);
+        Display::showMenu(playerName, playerExp);
         
         int choice;
         // --- 输入检查 (Input Validation) ---
@@ -522,7 +524,7 @@ int main() {
                     system("pause");
                     break;
                 }
-                
+
                 // 统一显示所有装备
                 for (size_t i = 0; i < upgradeableEquipment.size(); i++) {
                     Equipment* equip = upgradeableEquipment[i];
@@ -782,14 +784,246 @@ int main() {
                         system("pause");
                         system("cls");
                         cout << "\n=== 基地商店 ===" << endl;
-                    } else {
+                } else {
                         cout << "无效选项！" << endl;
                     }
                 }
                 break;
             }
             
-            case 6: // 手动存档
+            case 6: // 装备合并
+            {
+                cout << "\n=== 装备合并系统 ===" << endl;
+                cout << "合并规则：" << endl;
+                cout << "  1. 两件装备必须来自同一势力" << endl;
+                cout << "  2. 必须同时是武器或同时是装甲" << endl;
+                cout << "  3. 不能是传奇级别的装备" << endl;
+                cout << "  4. 不能合并已装备的装备" << endl;
+                cout << "  5. 合并后获得稀有度+1的新装备（等级1）" << endl;
+                cout << "\n可合并的装备：" << endl;
+                
+                // 筛选可合并的装备（未装备的非传奇装备）
+                vector<Equipment*> mergeableEquipment;
+                for (auto eq : inventory) {
+                    // 检查是否已装备
+                    bool isEquipped = false;
+                    if (eq == equipSlot.equippedArmor) {
+                        isEquipped = true;
+                    }
+                    for (auto w : equipSlot.equippedWeapons) {
+                        if (eq == w) {
+                            isEquipped = true;
+                            break;
+                        }
+                    }
+                    
+                    // 只添加未装备且非传奇的装备
+                    if (!isEquipped && eq->getRarity() != Rarity::LEGENDARY) {
+                        mergeableEquipment.push_back(eq);
+                    }
+                }
+                
+                if (mergeableEquipment.size() < 2) {
+                    cout << "\n可合并的装备不足2件！" << endl;
+                    cout << "（需要至少2件未装备的非传奇装备）" << endl;
+                    system("pause");
+                    break;
+                }
+                
+                // 显示可合并的装备
+                for (size_t i = 0; i < mergeableEquipment.size(); i++) {
+                    Equipment* eq = mergeableEquipment[i];
+                    Weapon* w = dynamic_cast<Weapon*>(eq);
+                    Armor* a = dynamic_cast<Armor*>(eq);
+                    
+                    cout << "[" << i << "] ";
+                    cout << Display::getRarityColor(eq->getRarity()) 
+                         << eq->getName() << Display::COLOR_RESET;
+                    
+                    if (w) {
+                        cout << " [武器]";
+                    } else if (a) {
+                        cout << " [装甲]";
+                    }
+                    
+                    cout << " | 势力: " << eq->getFaction();
+                    cout << " | 等级: " << eq->getLevel();
+                    cout << endl;
+                }
+                
+                cout << "\n请选择第一件装备 (输入-1取消): ";
+                int choice1;
+                cin >> choice1;
+                
+                if (choice1 < 0 || choice1 >= (int)mergeableEquipment.size()) {
+                    cout << "已取消合并。" << endl;
+                    system("pause");
+                    break;
+                }
+                
+                cout << "请选择第二件装备 (输入-1取消): ";
+                int choice2;
+                cin >> choice2;
+                
+                if (choice2 < 0 || choice2 >= (int)mergeableEquipment.size()) {
+                    cout << "已取消合并。" << endl;
+                    system("pause");
+                    break;
+                }
+                
+                if (choice1 == choice2) {
+                    cout << "不能选择同一件装备！" << endl;
+                    system("pause");
+                    break;
+                }
+                
+                Equipment* eq1 = mergeableEquipment[choice1];
+                Equipment* eq2 = mergeableEquipment[choice2];
+                
+                // 检查合并条件
+                Weapon* w1 = dynamic_cast<Weapon*>(eq1);
+                Weapon* w2 = dynamic_cast<Weapon*>(eq2);
+                Armor* a1 = dynamic_cast<Armor*>(eq1);
+                Armor* a2 = dynamic_cast<Armor*>(eq2);
+                
+                // 检查是否同类型
+                bool sameType = (w1 && w2) || (a1 && a2);
+                if (!sameType) {
+                    cout << "\n合并失败：两件装备必须同时是武器或同时是装甲！" << endl;
+                    system("pause");
+                    break;
+                }
+                
+                // 检查是否同势力
+                if (eq1->getFaction() != eq2->getFaction()) {
+                    cout << "\n合并失败：两件装备必须来自同一势力！" << endl;
+                    cout << "装备1势力: " << eq1->getFaction() << endl;
+                    cout << "装备2势力: " << eq2->getFaction() << endl;
+                    system("pause");
+                    break;
+                }
+                
+                // 计算新装备的稀有度
+                Rarity newRarity = static_cast<Rarity>(
+                    max(static_cast<int>(eq1->getRarity()), static_cast<int>(eq2->getRarity())) + 1
+                );
+                
+                // 检查稀有度是否超过传奇
+                if (newRarity > Rarity::LEGENDARY) {
+                    newRarity = Rarity::LEGENDARY;
+                }
+                
+                cout << "\n=== 合并预览 ===" << endl;
+                cout << "装备1: " << Display::getRarityColor(eq1->getRarity()) 
+                     << eq1->getName() << Display::COLOR_RESET << endl;
+                cout << "装备2: " << Display::getRarityColor(eq2->getRarity()) 
+                     << eq2->getName() << Display::COLOR_RESET << endl;
+                cout << "势力: " << eq1->getFaction() << endl;
+                cout << "新稀有度: " << Display::getRarityColor(newRarity);
+                switch(newRarity) {
+                    case Rarity::BROKEN: cout << "损坏"; break;
+                    case Rarity::STANDARD: cout << "普通"; break;
+                    case Rarity::MILITARY: cout << "军用"; break;
+                    case Rarity::LEGENDARY: cout << "传奇"; break;
+                }
+                cout << Display::COLOR_RESET << endl;
+                
+                cout << "\n确认合并？(1=是, 0=否): ";
+                int confirm;
+                cin >> confirm;
+                
+                if (confirm != 1) {
+                    cout << "已取消合并。" << endl;
+                    system("pause");
+                    break;
+                }
+                
+                // 执行合并
+                cout << "\n正在合并装备..." << endl;
+                
+                // 从该势力的装备中随机选择一个
+                vector<Equipment*> factionEquipment;
+                vector<Equipment*> allTemplates = SaveManager::getAllEquipmentTemplates();
+                
+                for (auto tmpl : allTemplates) {
+                    if (tmpl->getFaction() == eq1->getFaction()) {
+                        // 检查类型匹配
+                        Weapon* tw = dynamic_cast<Weapon*>(tmpl);
+                        Armor* ta = dynamic_cast<Armor*>(tmpl);
+                        
+                        if ((w1 && tw) || (a1 && ta)) {
+                            factionEquipment.push_back(tmpl);
+                        }
+                    }
+                }
+                
+                if (factionEquipment.empty()) {
+                    cout << "合并失败：找不到该势力的装备模板！" << endl;
+                    system("pause");
+                    break;
+                }
+                
+                // 随机选择一个装备
+                srand(time(nullptr));
+                int randomIdx = rand() % factionEquipment.size();
+                Equipment* selectedTemplate = factionEquipment[randomIdx];
+                
+                // 创建新装备（等级1，新稀有度）
+                Equipment* newEquipment = nullptr;
+                Weapon* tw = dynamic_cast<Weapon*>(selectedTemplate);
+                Armor* ta = dynamic_cast<Armor*>(selectedTemplate);
+                
+                if (tw) {
+                    newEquipment = new Weapon(
+                        tw->getId(),
+                        tw->getName(),
+                        newRarity,
+                        1,  // 等级1
+                        tw->getFaction(),
+                        tw->getBaseAtk(),
+                        tw->getBaseCritRate(),
+                        tw->getBaseAtkSpeed(),
+                        tw->getWeight()
+                    );
+                } else if (ta) {
+                    newEquipment = new Armor(
+                        ta->getId(),
+                        ta->getName(),
+                        newRarity,
+                        1,  // 等级1
+                        ta->getFaction(),
+                        ta->getBaseMaxHp(),
+                        ta->getBaseDodgeRate(),
+                        ta->getBaseCapacity()
+                    );
+                }
+                
+                if (newEquipment) {
+                    // 从背包中移除两件旧装备
+                    inventory.erase(remove(inventory.begin(), inventory.end(), eq1), inventory.end());
+                    inventory.erase(remove(inventory.begin(), inventory.end(), eq2), inventory.end());
+                    
+                    // 删除旧装备
+                    delete eq1;
+                    delete eq2;
+                    
+                    // 添加新装备
+                    inventory.push_back(newEquipment);
+                    
+                    cout << "\n★ 合并成功！ ★" << endl;
+                    cout << "获得: " << Display::getRarityColor(newEquipment->getRarity())
+                         << newEquipment->getName() << Display::COLOR_RESET << endl;
+                    cout << "等级: 1" << endl;
+                    cout << newEquipment->getDescription() << endl;
+                } else {
+                    cout << "合并失败：无法创建新装备！" << endl;
+                }
+                
+                system("pause");
+                break;
+            }
+            
+            case 7: // 手动存档
             {
                 cout << "\n=== 手动存档 ===" << endl;
                 cout << "正在保存游戏进度..." << endl;

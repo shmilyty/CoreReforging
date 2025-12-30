@@ -42,6 +42,7 @@ public:
     string getName() const;
     int getLevel() const;
     Rarity getRarity() const;
+    string getFaction() const { return faction; }
     
     // 运算符重载：实现"合成"功能
     // 声明：两个 Equipment 指针的内容相加，返回一个新的 Equipment 指针
@@ -104,7 +105,7 @@ public:
     int getUpgradeCost() const {
         // 升级消耗 = 10 * 稀有度等级
         int rarityLevel = static_cast<int>(rarity) + 1;  // BROKEN=1, STANDARD=2, MILITARY=3, LEGENDARY=4
-        return 10 * rarityLevel;
+        return 30 * rarityLevel;
     }
     
     int getUpgradeSuccessRate() const {

@@ -211,11 +211,13 @@ public:
                 cout << " | 暴击率:" << w->getCritRate() << "%";
                 cout << " | 攻速:" << w->getAtkSpeed();
                 cout << " | 重量:" << w->getWeight();
+                cout << " | 势力:" << w->getFaction();
             } else if (a) {
                 cout << " (装甲)";
                 cout << " | HP:" << a->getMaxHp();
                 cout << " | 闪避率:" << a->getDodgeRate() << "%";
                 cout << " | 承重:" << a->getCapacity();
+                cout << " | 势力:" << a->getFaction();
             }
             
             cout << " | 价格: " << items[i].price << " EXP" << endl;

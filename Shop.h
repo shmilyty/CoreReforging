@@ -30,6 +30,7 @@ private:
     vector<Equipment*> allEquipments; // 所有可用装备模板
     mt19937 rng;
     bool needsRefresh;                // 是否需要刷新
+    int manualRefreshCost;            // 手动刷新费用
     
     // 获取稀有度对应的颜色代码
     string getRarityColor(Rarity r) const {
@@ -47,13 +48,63 @@ private:
         return 500 * (static_cast<int>(eq->getRarity()) + 1);
     }
     
+    // 根据稀有度概率选择装备
+    // 概率: BROKEN 50%, STANDARD 30%, MILITARY 15%, LEGENDARY 5%
+    Equipment* selectEquipmentByRarity() {
+        if (allEquipments.empty()) return nullptr;
+        
+        // 按稀有度分类装备
+        vector<Equipment*> brokenItems, standardItems, militaryItems, legendaryItems;
+        for (auto eq : allEquipments) {
+            switch(eq->getRarity()) {
+                case Rarity::BROKEN: brokenItems.push_back(eq); break;
+                case Rarity::STANDARD: standardItems.push_back(eq); break;
+                case Rarity::MILITARY: militaryItems.push_back(eq); break;
+                case Rarity::LEGENDARY: legendaryItems.push_back(eq); break;
+            }
+        }
+        
+        // 生成 0-99 的随机数
+        uniform_int_distribution<int> rarityDist(0, 99);
+        int roll = rarityDist(rng);
+        
+        vector<Equipment*>* selectedPool = nullptr;
+        
+        if (roll < 50 && !brokenItems.empty()) {
+            // 0-49: BROKEN (50%)
+            selectedPool = &brokenItems;
+        } else if (roll < 80 && !standardItems.empty()) {
+            // 50-79: STANDARD (30%)
+            selectedPool = &standardItems;
+        } else if (roll < 95 && !militaryItems.empty()) {
+            // 80-94: MILITARY (15%)
+            selectedPool = &militaryItems;
+        } else if (!legendaryItems.empty()) {
+            // 95-99: LEGENDARY (5%)
+            selectedPool = &legendaryItems;
+        }
+        
+        // 如果选中的池子为空，回退到其他池子
+        if (!selectedPool || selectedPool->empty()) {
+            if (!standardItems.empty()) selectedPool = &standardItems;
+            else if (!brokenItems.empty()) selectedPool = &brokenItems;
+            else if (!militaryItems.empty()) selectedPool = &militaryItems;
+            else if (!legendaryItems.empty()) selectedPool = &legendaryItems;
+            else return nullptr;
+        }
+        
+        // 从选中的池子中随机选择一个
+        uniform_int_distribution<int> itemDist(0, selectedPool->size() - 1);
+        return (*selectedPool)[itemDist(rng)];
+    }
+    
 public:
     Shop(const vector<Equipment*>& equipmentTemplates) 
-        : allEquipments(equipmentTemplates), needsRefresh(true) {
+        : allEquipments(equipmentTemplates), needsRefresh(true), manualRefreshCost(50) {
         rng.seed(static_cast<unsigned int>(time(nullptr)));
     }
     
-    // 刷新商店（随机3件装备）
+    // 刷新商店（随机3件装备，避免重复）
     void refresh() {
         // 清空旧物品
         for (auto& item : items) {
@@ -66,18 +117,74 @@ public:
             return;
         }
         
-        // 随机选择3件装备
-        uniform_int_distribution<int> dist(0, allEquipments.size() - 1);
-        for (int i = 0; i < 3; i++) {
-            int idx = dist(rng);
-            Equipment* template_eq = allEquipments[idx];
-            Equipment* eq = template_eq->clone(template_eq->getName(), 1);
-            int price = calculatePrice(eq);
-            items.push_back(ShopItem(eq, price));
+        // 随机选择3件不重复的装备
+        vector<int> selectedIds; // 记录已选择的装备ID，避免重复
+        int attempts = 0;
+        const int maxAttempts = 100; // 防止无限循环
+        
+        while (items.size() < 3 && attempts < maxAttempts) {
+            Equipment* template_eq = selectEquipmentByRarity();
+            if (!template_eq) break;
+            
+            // 检查是否已经选择过这个ID
+            bool isDuplicate = false;
+            for (int id : selectedIds) {
+                if (id == template_eq->getId()) {
+                    isDuplicate = true;
+                    break;
+                }
+            }
+            
+            if (!isDuplicate) {
+                Equipment* eq = template_eq->clone(template_eq->getName(), 1);
+                int price = calculatePrice(eq);
+                items.push_back(ShopItem(eq, price));
+                selectedIds.push_back(template_eq->getId());
+            }
+            
+            attempts++;
+        }
+        
+        // 如果装备种类不足3种，允许重复
+        if (items.size() < 3) {
+            while (items.size() < 3) {
+                Equipment* template_eq = selectEquipmentByRarity();
+                if (!template_eq) break;
+                Equipment* eq = template_eq->clone(template_eq->getName(), 1);
+                int price = calculatePrice(eq);
+                items.push_back(ShopItem(eq, price));
+            }
         }
         
         needsRefresh = false;
+        // 自然刷新时重置手动刷新费用
+        manualRefreshCost = 50;
         cout << "[系统] 商店已刷新！" << endl;
+    }
+    
+    // 手动刷新商店（花费EXP）
+    bool manualRefresh(int& playerExp) {
+        if (playerExp < manualRefreshCost) {
+            cout << "[错误] EXP 不足！需要 " << manualRefreshCost << " EXP 刷新商店。" << endl;
+            return false;
+        }
+        
+        playerExp -= manualRefreshCost;
+        cout << "[系统] 花费 " << manualRefreshCost << " EXP 刷新商店。" << endl;
+        
+        // 刷新商店
+        refresh();
+        
+        // 翻倍刷新费用
+        manualRefreshCost *= 2;
+        cout << "[提示] 下次手动刷新费用: " << manualRefreshCost << " EXP" << endl;
+        
+        return true;
+    }
+    
+    // 获取当前手动刷新费用
+    int getManualRefreshCost() const {
+        return manualRefreshCost;
     }
     
     // 显示商店
@@ -114,6 +221,7 @@ public:
             cout << " | 价格: " << items[i].price << " EXP" << endl;
         }
         cout << "==========================" << endl;
+        cout << "[提示] 手动刷新费用: " << manualRefreshCost << " EXP" << endl;
     }
     
     // 购买物品
@@ -167,6 +275,7 @@ public:
     json toJson() const {
         json j;
         j["needs_refresh"] = needsRefresh;
+        j["manual_refresh_cost"] = manualRefreshCost;
         
         json itemsArray = json::array();
         for (const auto& item : items) {
@@ -190,6 +299,7 @@ public:
         items.clear();
         
         needsRefresh = j.value("needs_refresh", true);
+        manualRefreshCost = j.value("manual_refresh_cost", 50);
         
         if (j.contains("items")) {
             for (const auto& itemJson : j["items"]) {

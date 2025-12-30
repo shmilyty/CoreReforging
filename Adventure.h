@@ -446,7 +446,7 @@ private:
             // 计算可用EXP
             int availableExp = playerExp + stats.totalExpGained - stats.totalExpSpent;
             cout << "\n当前可用 EXP: " << availableExp << endl;
-            cout << "\n[1-3] 购买对应商品 | [0] 返回" << endl;
+            cout << "\n[1-3] 购买对应商品 | [4] 手动刷新 (" << campfireShop->getManualRefreshCost() << " EXP) | [0] 返回" << endl;
             cout << ">>> 请选择: ";
             
             int choice;
@@ -462,6 +462,19 @@ private:
                     int spent = availableExp - tempExp;
                     stats.totalExpSpent += spent;
                     cout << "\n[提示] 装备已添加到背包！" << endl;
+                }
+                system("pause");
+                system("cls");
+                cout << "\n=== 篝火 - 商店 ===" << endl;
+                showAdventureStatus();
+            } else if (choice == 4) {
+                // 手动刷新
+                int tempExp = availableExp;
+                if (campfireShop->manualRefresh(tempExp)) {
+                    // 刷新成功，计算实际消耗
+                    int spent = availableExp - tempExp;
+                    stats.totalExpSpent += spent;
+                    cout << "\n商店已刷新！" << endl;
                 }
                 system("pause");
                 system("cls");

@@ -2,21 +2,22 @@
     "base_shop": {
         "items": [
             {
-                "equipment_id": 102,
+                "equipment_id": 107,
                 "equipment_level": 1,
-                "price": 1500
+                "price": 500
             },
             {
-                "equipment_id": 101,
+                "equipment_id": 141,
                 "equipment_level": 1,
                 "price": 1000
             },
             {
-                "equipment_id": 204,
+                "equipment_id": 118,
                 "equipment_level": 1,
-                "price": 2000
+                "price": 1000
             }
         ],
+        "manual_refresh_cost": 100,
         "needs_refresh": false
     },
     "campfire_shop": {
@@ -37,6 +38,7 @@
                 "price": 2000
             }
         ],
+        "manual_refresh_cost": 50,
         "needs_refresh": true
     }
 }

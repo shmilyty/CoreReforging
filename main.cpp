@@ -91,7 +91,7 @@ public:
         cout << "[4] 出发冒险 (Adventure)" << endl;
         cout << "[5] 访问商店 (Shop)" << endl;
         cout << "[6] 手动存档 (Save)" << endl;
-        cout << "[9] 测试：获得100 EXP" << endl;  // 测试用
+        // cout << "[9] 测试：获得100 EXP" << endl;  // 测试用
         // cout << "[7] 装备合成实验 (Synthesis)" << endl;  // 暂时隐藏
         // cout << "[8] 查看怪物图鉴 (Bestiary)" << endl;  // 暂时隐藏
         cout << "[0] 退出系统 (Exit)" << endl;
@@ -699,7 +699,7 @@ int main() {
                     cout << "\n";
                     baseShop.display();
                     cout << "\n当前 EXP: " << playerExp << endl;
-                    cout << "\n[1-3] 购买对应商品 | [0] 返回主菜单" << endl;
+                    cout << "\n[1-3] 购买对应商品 | [4] 手动刷新 (" << baseShop.getManualRefreshCost() << " EXP) | [0] 返回主菜单" << endl;
                     cout << ">>> 请选择: ";
                     
                     int shopChoice;
@@ -710,6 +710,14 @@ int main() {
                     } else if (shopChoice >= 1 && shopChoice <= 3) {
                         if (baseShop.buyItem(shopChoice - 1, playerExp, inventory)) {
                             cout << "\n[提示] 装备已添加到背包！" << endl;
+                        }
+                        system("pause");
+                        system("cls");
+                        cout << "\n=== 基地商店 ===" << endl;
+                    } else if (shopChoice == 4) {
+                        // 手动刷新
+                        if (baseShop.manualRefresh(playerExp)) {
+                            cout << "\n商店已刷新！" << endl;
                         }
                         system("pause");
                         system("cls");
@@ -734,9 +742,9 @@ int main() {
                 break;
             }
             
-            case 9: // 测试：获得EXP
-                playerExp += 100;
-                cout << "获得 100 EXP！当前 EXP: " << playerExp << endl;
+            case -114: // 测试：获得EXP
+                playerExp += 1000;
+                cout << "获得 1000 EXP！当前 EXP: " << playerExp << endl;
                 system("pause");
                 break;
 

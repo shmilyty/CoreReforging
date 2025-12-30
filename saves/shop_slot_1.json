@@ -1,0 +1,42 @@
+{
+    "base_shop": {
+        "items": [
+            {
+                "equipment_id": 102,
+                "equipment_level": 1,
+                "price": 1500
+            },
+            {
+                "equipment_id": 101,
+                "equipment_level": 1,
+                "price": 1000
+            },
+            {
+                "equipment_id": 204,
+                "equipment_level": 1,
+                "price": 2000
+            }
+        ],
+        "needs_refresh": false
+    },
+    "campfire_shop": {
+        "items": [
+            {
+                "equipment_id": 102,
+                "equipment_level": 1,
+                "price": 1500
+            },
+            {
+                "equipment_id": 101,
+                "equipment_level": 1,
+                "price": 1000
+            },
+            {
+                "equipment_id": 204,
+                "equipment_level": 1,
+                "price": 2000
+            }
+        ],
+        "needs_refresh": true
+    }
+}

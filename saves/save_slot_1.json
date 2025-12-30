@@ -2,12 +2,11 @@
     "equipment_config": {
         "armor_id": 201,
         "weapon_ids": [
-            101,
             102,
-            103
+            102
         ]
     },
-    "exp": 3075,
+    "exp": 485,
     "inventory": [
         {
             "lv": 3,
@@ -33,6 +32,26 @@
             "lv": 3,
             "rar": 0,
             "tid": 103
+        },
+        {
+            "lv": 3,
+            "rar": 2,
+            "tid": 102
+        },
+        {
+            "lv": 1,
+            "rar": 2,
+            "tid": 102
+        },
+        {
+            "lv": 1,
+            "rar": 1,
+            "tid": 201
+        },
+        {
+            "lv": 1,
+            "rar": 1,
+            "tid": 101
         }
     ],
     "player_name": "玩家A"

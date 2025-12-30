@@ -28,6 +28,15 @@ public:
         }
         return nullptr;
     }
+    
+    // 获取所有装备模板
+    static vector<Equipment*> getAllEquipmentTemplates() {
+        vector<Equipment*> templates;
+        for (auto& pair : itemLibrary) {
+            templates.push_back(pair.second);
+        }
+        return templates;
+    }
     // 1. 初始化：加载所有游戏数据 (由队友设计的)
     static void initGameData(const string& dbFile) {
         ifstream f(dbFile);

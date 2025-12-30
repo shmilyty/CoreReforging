@@ -53,8 +53,9 @@ public:
     // 升级系统接口
     virtual bool canLevelUp() const = 0;
     virtual int getUpgradeCost() const = 0;
-    virtual void levelUp() = 0;
+    virtual bool levelUp() = 0;  // 返回 true 表示升级成功，false 表示失败
     virtual int getMaxLevel() const { return 3; }
+    virtual int getUpgradeSuccessRate() const = 0;  // 获取升级成功率（百分比）
 };
 
 // 武器类
@@ -106,10 +107,36 @@ public:
         return 10 * rarityLevel;
     }
     
-    void levelUp() {
-        if (canLevelUp()) {
-            level++;
+    int getUpgradeSuccessRate() const {
+        // 军用和传奇装备升级成功率为 60%，其他为 100%
+        if (rarity == Rarity::MILITARY || rarity == Rarity::LEGENDARY) {
+            return 60;
         }
+        return 100;
+    }
+    
+    bool levelUp() {
+        if (!canLevelUp()) {
+            return false;
+        }
+        
+        // 军用和传奇装备有 40% 概率失败
+        if (rarity == Rarity::MILITARY || rarity == Rarity::LEGENDARY) {
+            // 生成 0-99 的随机数
+            int roll = rand() % 100;
+            if (roll < 60) {
+                // 60% 概率成功（0-59）
+                level++;
+                return true;
+            } else {
+                // 40% 概率失败（60-99）
+                return false;
+            }
+        }
+        
+        // 损坏和普通装备 100% 成功
+        level++;
+        return true;
     }
 
     // 实现基类的纯虚函数
@@ -179,10 +206,36 @@ public:
         return 10 * rarityLevel;
     }
     
-    void levelUp() {
-        if (canLevelUp()) {
-            level++;
+    int getUpgradeSuccessRate() const {
+        // 军用和传奇装备升级成功率为 60%，其他为 100%
+        if (rarity == Rarity::MILITARY || rarity == Rarity::LEGENDARY) {
+            return 60;
         }
+        return 100;
+    }
+    
+    bool levelUp() {
+        if (!canLevelUp()) {
+            return false;
+        }
+        
+        // 军用和传奇装备有 40% 概率失败
+        if (rarity == Rarity::MILITARY || rarity == Rarity::LEGENDARY) {
+            // 生成 0-99 的随机数
+            int roll = rand() % 100;
+            if (roll < 60) {
+                // 60% 概率成功（0-59）
+                level++;
+                return true;
+            } else {
+                // 40% 概率失败（60-99）
+                return false;
+            }
+        }
+        
+        // 损坏和普通装备 100% 成功
+        level++;
+        return true;
     }
 
     int calculatePower() const override {

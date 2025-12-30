@@ -165,21 +165,37 @@ void loadShopStates(int slotIndex, Shop& baseShop, Shop& campfireShop, const vec
     
     if (!f.is_open()) {
         // 如果没有商店存档，初始化为新商店
+        cout << "[系统] 商店存档不存在，正在初始化新商店。" << endl;
         baseShop.refresh();
         return;
     }
     
     try {
         json shopJson = json::parse(f);
+        f.close();
+        
         if (shopJson.contains("base_shop")) {
             baseShop.fromJson(shopJson["base_shop"], templates);
+        } else {
+            cout << "[警告] 基地商店数据缺失，正在重新初始化。" << endl;
+            baseShop.refresh();
         }
+        
         if (shopJson.contains("campfire_shop")) {
             campfireShop.fromJson(shopJson["campfire_shop"], templates);
+        } else {
+            cout << "[提示] 篝火商店数据缺失，将在首次冒险时初始化。" << endl;
         }
+        
         cout << "[存档] 商店状态已恢复。" << endl;
     } catch (json::parse_error& e) {
-        cout << "[警告] 商店存档解析失败，将重新初始化。" << endl;
+        f.close();
+        cout << "[警告] 商店存档损坏（JSON 解析失败），正在重新初始化。" << endl;
+        cout << "[详细] " << e.what() << endl;
+        baseShop.refresh();
+    } catch (...) {
+        f.close();
+        cout << "[警告] 商店存档读取失败，正在重新初始化。" << endl;
         baseShop.refresh();
     }
 }
@@ -529,7 +545,11 @@ int main() {
                     
                     if (weapon && weapon->canLevelUp()) {
                         int cost = weapon->getUpgradeCost();
+                        int successRate = weapon->getUpgradeSuccessRate();
                         cout << " | 升级消耗: " << cost << " EXP";
+                        if (successRate < 100) {
+                            cout << " | 成功率: " << successRate << "%";
+                        }
                         if (playerExp >= cost) {
                             cout << " [可升级]";
                         } else {
@@ -537,7 +557,11 @@ int main() {
                         }
                     } else if (armor && armor->canLevelUp()) {
                         int cost = armor->getUpgradeCost();
+                        int successRate = armor->getUpgradeSuccessRate();
                         cout << " | 升级消耗: " << cost << " EXP";
+                        if (successRate < 100) {
+                            cout << " | 成功率: " << successRate << "%";
+                        }
                         if (playerExp >= cost) {
                             cout << " [可升级]";
                         } else {
@@ -599,23 +623,41 @@ int main() {
                             cout << "该武器已达到最高等级！" << endl;
                         } else {
                             int cost = selectedWeapon->getUpgradeCost();
+                            int successRate = selectedWeapon->getUpgradeSuccessRate();
+                            
                             if (playerExp < cost) {
                                 cout << "EXP不足！需要 " << cost << " EXP，当前只有 " << playerExp << " EXP。" << endl;
                             } else {
-                                playerExp -= cost;
-                                selectedWeapon->levelUp();
-                                cout << "\n升级成功！" << endl;
-                                cout << Display::getRarityColor(selectedWeapon->getRarity()) 
-                                     << selectedWeapon->getName() << Display::COLOR_RESET 
-                                     << " 已升级到 Lv." << selectedWeapon->getLevel() << "！" << endl;
-                                cout << "消耗 " << cost << " EXP，剩余 " << playerExp << " EXP。" << endl;
+                                // 显示升级成功率
+                                if (successRate < 100) {
+                                    cout << "\n[提示] 该装备升级成功率: " << successRate << "%" << endl;
+                                }
                                 
-                                // 显示新属性
-                                cout << "\n新属性：" << endl;
-                                cout << "  攻击力: " << selectedWeapon->getAtk() << endl;
-                                cout << "  暴击率: " << selectedWeapon->getCritRate() << "%" << endl;
-                                cout << "  攻击速度: " << selectedWeapon->getAtkSpeed() << " 回合/次" << endl;
-                                cout << "  战斗力: " << selectedWeapon->calculatePower() << endl;
+                                playerExp -= cost;
+                                cout << "消耗 " << cost << " EXP，剩余 " << playerExp << " EXP。" << endl;
+                                cout << "\n正在尝试升级..." << endl;
+                                
+                                bool success = selectedWeapon->levelUp();
+                                
+                                if (success) {
+                                    cout << "\n★ 升级成功！ ★" << endl;
+                                    cout << Display::getRarityColor(selectedWeapon->getRarity()) 
+                                         << selectedWeapon->getName() << Display::COLOR_RESET 
+                                         << " 已升级到 Lv." << selectedWeapon->getLevel() << "！" << endl;
+                                    
+                                    // 显示新属性
+                                    cout << "\n新属性：" << endl;
+                                    cout << "  攻击力: " << selectedWeapon->getAtk() << endl;
+                                    cout << "  暴击率: " << selectedWeapon->getCritRate() << "%" << endl;
+                                    cout << "  攻击速度: " << selectedWeapon->getAtkSpeed() << " 回合/次" << endl;
+                                    cout << "  战斗力: " << selectedWeapon->calculatePower() << endl;
+                                } else {
+                                    cout << "\n✗ 升级失败... ✗" << endl;
+                                    cout << Display::getRarityColor(selectedWeapon->getRarity()) 
+                                         << selectedWeapon->getName() << Display::COLOR_RESET 
+                                         << " 保持在 Lv." << selectedWeapon->getLevel() << endl;
+                                    cout << "EXP 已消耗，但装备等级未提升。" << endl;
+                                }
                             }
                         }
                     } else if (selectedArmor) {
@@ -624,23 +666,41 @@ int main() {
                             cout << "该装甲已达到最高等级！" << endl;
                         } else {
                             int cost = selectedArmor->getUpgradeCost();
+                            int successRate = selectedArmor->getUpgradeSuccessRate();
+                            
                             if (playerExp < cost) {
                                 cout << "EXP不足！需要 " << cost << " EXP，当前只有 " << playerExp << " EXP。" << endl;
                             } else {
-                                playerExp -= cost;
-                                selectedArmor->levelUp();
-                                cout << "\n升级成功！" << endl;
-                                cout << Display::getRarityColor(selectedArmor->getRarity()) 
-                                     << selectedArmor->getName() << Display::COLOR_RESET 
-                                     << " 已升级到 Lv." << selectedArmor->getLevel() << "！" << endl;
-                                cout << "消耗 " << cost << " EXP，剩余 " << playerExp << " EXP。" << endl;
+                                // 显示升级成功率
+                                if (successRate < 100) {
+                                    cout << "\n[提示] 该装备升级成功率: " << successRate << "%" << endl;
+                                }
                                 
-                                // 显示新属性
-                                cout << "\n新属性：" << endl;
-                                cout << "  血量上限: " << selectedArmor->getMaxHp() << endl;
-                                cout << "  闪避率: " << selectedArmor->getDodgeRate() << "%" << endl;
-                                cout << "  承重量: " << selectedArmor->getCapacity() << endl;
-                                cout << "  战斗力: " << selectedArmor->calculatePower() << endl;
+                                playerExp -= cost;
+                                cout << "消耗 " << cost << " EXP，剩余 " << playerExp << " EXP。" << endl;
+                                cout << "\n正在尝试升级..." << endl;
+                                
+                                bool success = selectedArmor->levelUp();
+                                
+                                if (success) {
+                                    cout << "\n★ 升级成功！ ★" << endl;
+                                    cout << Display::getRarityColor(selectedArmor->getRarity()) 
+                                         << selectedArmor->getName() << Display::COLOR_RESET 
+                                         << " 已升级到 Lv." << selectedArmor->getLevel() << "！" << endl;
+                                    
+                                    // 显示新属性
+                                    cout << "\n新属性：" << endl;
+                                    cout << "  血量上限: " << selectedArmor->getMaxHp() << endl;
+                                    cout << "  闪避率: " << selectedArmor->getDodgeRate() << "%" << endl;
+                                    cout << "  承重量: " << selectedArmor->getCapacity() << endl;
+                                    cout << "  战斗力: " << selectedArmor->calculatePower() << endl;
+                                } else {
+                                    cout << "\n✗ 升级失败... ✗" << endl;
+                                    cout << Display::getRarityColor(selectedArmor->getRarity()) 
+                                         << selectedArmor->getName() << Display::COLOR_RESET 
+                                         << " 保持在 Lv." << selectedArmor->getLevel() << endl;
+                                    cout << "EXP 已消耗，但装备等级未提升。" << endl;
+                                }
                             }
                         }
                     }

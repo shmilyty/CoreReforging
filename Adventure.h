@@ -377,7 +377,11 @@ private:
             
             if (equip->canLevelUp()) {
                 int cost = equip->getUpgradeCost();
+                int successRate = equip->getUpgradeSuccessRate();
                 cout << " | 升级消耗: " << cost << " EXP";
+                if (successRate < 100) {
+                    cout << " | 成功率: " << successRate << "%";
+                }
                 if (availableExp >= cost) {
                     cout << " [可升级]";
                 } else {
@@ -400,20 +404,36 @@ private:
                 cout << "\n该装备已达到最高等级！" << endl;
             } else {
                 int cost = selectedEquip->getUpgradeCost();
+                int successRate = selectedEquip->getUpgradeSuccessRate();
+                
                 if (availableExp < cost) {
                     cout << "\nEXP不足！需要 " << cost << " EXP，当前可用 " << availableExp << " EXP。" << endl;
                 } else {
-                    stats.totalExpSpent += cost;
-                    selectedEquip->levelUp();
-                    cout << "\n升级成功！" << endl;
-                    cout << selectedEquip->getName() << " 已升级到 Lv." << selectedEquip->getLevel() << "！" << endl;
-                    cout << "消耗 " << cost << " EXP" << endl;
+                    // 显示升级成功率
+                    if (successRate < 100) {
+                        cout << "\n[提示] 该装备升级成功率: " << successRate << "%" << endl;
+                    }
                     
-                    // 如果升级的是当前装备的装甲，更新最大生命值
-                    if (selectedEquip == playerEquipment->equippedArmor) {
-                        playerMaxHp = playerEquipment->equippedArmor->getMaxHp();
-                        playerCurrentHp = playerMaxHp;  // 升级后恢复满血
-                        cout << "装甲升级！生命值已恢复至满！" << endl;
+                    stats.totalExpSpent += cost;
+                    cout << "消耗 " << cost << " EXP" << endl;
+                    cout << "\n正在尝试升级..." << endl;
+                    
+                    bool success = selectedEquip->levelUp();
+                    
+                    if (success) {
+                        cout << "\n★ 升级成功！ ★" << endl;
+                        cout << selectedEquip->getName() << " 已升级到 Lv." << selectedEquip->getLevel() << "！" << endl;
+                        
+                        // 如果升级的是当前装备的装甲，更新最大生命值
+                        if (selectedEquip == playerEquipment->equippedArmor) {
+                            playerMaxHp = playerEquipment->equippedArmor->getMaxHp();
+                            playerCurrentHp = playerMaxHp;  // 升级后恢复满血
+                            cout << "装甲升级！生命值已恢复至满！" << endl;
+                        }
+                    } else {
+                        cout << "\n✗ 升级失败... ✗" << endl;
+                        cout << selectedEquip->getName() << " 保持在 Lv." << selectedEquip->getLevel() << endl;
+                        cout << "EXP 已消耗，但装备等级未提升。" << endl;
                     }
                 }
             }

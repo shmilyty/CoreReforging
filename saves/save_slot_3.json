@@ -1,3 +1,9 @@
 {
-    "exp": 0
+    "equipment_config": {
+        "armor_id": -1,
+        "weapon_ids": []
+    },
+    "exp": 0,
+    "inventory": [],
+    "player_name": ""
 }

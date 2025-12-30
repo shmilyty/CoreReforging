@@ -1,0 +1,355 @@
+// SaveManager.h
+#ifndef SAVE_MANAGER_H
+#define SAVE_MANAGER_H
+
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <map>
+#include <string>
+#include <sys/stat.h>  // 用于检查文件夹是否存在
+#include <direct.h>    // Windows 下创建文件夹
+#include "json.hpp" // 确保有 nlohmann/json
+#include "GameCore.h"
+
+using json = nlohmann::json;
+using namespace std;
+
+class SaveManager {
+private:
+    // [静态数据库]：ID -> 装备模板的映射
+    // 就像一个图书馆，存着所有装备的原始样本
+    static map<int, Equipment*> itemLibrary;
+    static vector<Monster> monsterLibrary;
+
+public:
+    // 确保 saves 文件夹存在
+    static void ensureSavesFolderExists() {
+        struct stat info;
+        
+        // 检查 saves 文件夹是否存在
+        if (stat("saves", &info) != 0) {
+            // 文件夹不存在，创建它
+            #ifdef _WIN32
+                _mkdir("saves");
+            #else
+                mkdir("saves", 0755);
+            #endif
+            cout << "[系统] 已创建 saves 文件夹。" << endl;
+        } else if (!(info.st_mode & S_IFDIR)) {
+            // saves 存在但不是文件夹
+            cout << "[错误] saves 存在但不是文件夹！请手动删除 saves 文件。" << endl;
+        }
+    }
+    
+    // 获取装备库的访问方法
+    static Equipment* getItemTemplate(int id) {
+        if (itemLibrary.count(id)) {
+            return itemLibrary[id];
+        }
+        return nullptr;
+    }
+    
+    // 获取所有装备模板
+    static vector<Equipment*> getAllEquipmentTemplates() {
+        vector<Equipment*> templates;
+        for (auto& pair : itemLibrary) {
+            templates.push_back(pair.second);
+        }
+        return templates;
+    }
+    // 1. 初始化：加载所有游戏数据 (由队友设计的)
+    static void initGameData(const string& dbFile) {
+        ifstream f(dbFile);
+        if (!f.is_open()) {
+            cout << "[错误] 找不到游戏数据文件: " << dbFile << endl;
+            return;
+        }
+
+        json j = json::parse(f);
+
+        // 加载装备模板
+        for (auto& item : j["equipments"]) {
+            int id = item["id"];
+            string type = item["type"];
+            string name = item["name"];
+            string fac = item["faction"];
+            Rarity rar = STANDARD;
+            if (item.contains("rarity")) {
+                string rarStr = item["rarity"];
+                if (rarStr == "BROKEN") rar = BROKEN;
+                else if (rarStr == "STANDARD") rar = STANDARD;
+                else if (rarStr == "MILITARY") rar = MILITARY;
+                else if (rarStr == "LEGENDARY") rar = LEGENDARY;
+            }
+            
+            // 创建模板对象存入 map，作为原型
+            if (type == "weapon") {
+                int atk = item["atk"];
+                int critRate = item.value("crit_rate", 0);  // 已经是*100后的值
+                int atkSpeed = item.value("atk_speed", 1);
+                int weight = item.value("weight", 1);
+                itemLibrary[id] = new Weapon(id, name, rar, 0, fac, atk, critRate, atkSpeed, weight);
+            } else if (type == "armor") {
+                int hp = item["hp"];
+                int dodgeRate = item.value("dodge_rate", 0);  // 已经是*100后的值
+                int capacity = item.value("capacity", 10);
+                itemLibrary[id] = new Armor(id, name, rar, 0, fac, hp, dodgeRate, capacity);
+            }
+        }
+        cout << "[系统] 游戏数据库加载完毕，收录装备数: " << itemLibrary.size() << endl;
+    }
+
+    // 2. 保存存档 (Serialization)
+    static void saveGame(int slotIndex, const string& playerName, const vector<Equipment*>& inventory, int playerExp, 
+                        Equipment* equippedArmor, const vector<Equipment*>& equippedWeapons) {
+        json saveJson;
+        saveJson["player_name"] = playerName;
+        saveJson["exp"] = playerExp;
+        
+        // 序列化背包
+        json invArray = json::array();
+        for (auto item : inventory) {
+            json itemJson;
+            itemJson["tid"] = item->getId(); // 只存ID
+            itemJson["lv"] = item->getLevel(); // 存当前等级
+            itemJson["rar"] = static_cast<int>(item->getRarity()); // 存当前稀有度
+            invArray.push_back(itemJson);
+        }
+        saveJson["inventory"] = invArray;
+        
+        // 保存装备配置
+        json equipConfig;
+        if (equippedArmor) {
+            equipConfig["armor_id"] = equippedArmor->getId();
+        } else {
+            equipConfig["armor_id"] = -1;  // -1 表示未装备
+        }
+        
+        json weaponIds = json::array();
+        for (auto weapon : equippedWeapons) {
+            weaponIds.push_back(weapon->getId());
+        }
+        equipConfig["weapon_ids"] = weaponIds;
+        saveJson["equipment_config"] = equipConfig;
+
+        // 写入文件到 saves 文件夹
+        string filename = "saves/save_slot_" + to_string(slotIndex) + ".json";
+        ofstream f(filename);
+        f << saveJson.dump(4); // 缩进4空格，美观
+        cout << "[存档] 游戏已保存至槽位 " << slotIndex << endl;
+    }
+
+    // 3. 加载存档 (Deserialization)
+    static vector<Equipment*> loadSave(int slotIndex, string& playerName, int& playerExp, 
+                                       int& equippedArmorId, vector<int>& equippedWeaponIds) {
+        vector<Equipment*> result;
+        string filename = "saves/save_slot_" + to_string(slotIndex) + ".json";
+        ifstream f(filename);
+
+        if (!f.is_open()) {
+            cout << "[提示] 存档槽 " << slotIndex << " 为空，将开始新游戏。" << endl;
+            playerExp = 0;
+            equippedArmorId = -1;
+            equippedWeaponIds.clear();
+            return result; // 返回空背包
+        }
+
+        // 尝试解析 JSON，如果失败则视为损坏
+        json j;
+        try {
+            j = json::parse(f);
+            f.close();
+        } catch (json::parse_error& e) {
+            f.close();
+            cout << "[警告] 存档槽 " << slotIndex << " 损坏（JSON 解析失败），将开始新游戏。" << endl;
+            cout << "[详细] " << e.what() << endl;
+            playerExp = 0;
+            equippedArmorId = -1;
+            equippedWeaponIds.clear();
+            return result;
+        } catch (...) {
+            f.close();
+            cout << "[警告] 存档槽 " << slotIndex << " 读取失败，将开始新游戏。" << endl;
+            playerExp = 0;
+            equippedArmorId = -1;
+            equippedWeaponIds.clear();
+            return result;
+        }
+        
+        // 检查必要字段
+        if (!j.contains("player_name") || !j.contains("inventory")) {
+            cout << "[警告] 存档槽 " << slotIndex << " 损坏（缺少必要字段），将开始新游戏。" << endl;
+            playerExp = 0;
+            equippedArmorId = -1;
+            equippedWeaponIds.clear();
+            return result;
+        }
+        
+        playerName = j["player_name"];
+        playerExp = j.value("exp", 0);  // 读取exp，默认为0
+
+        for (auto& itemJson : j["inventory"]) {
+            int tid = itemJson["tid"];
+            int lv = itemJson["lv"];
+            int rar = itemJson["rar"];
+
+            // [关键步骤] 查表 -> 克隆 -> 恢复状态
+            if (itemLibrary.count(tid)) {
+                Equipment* prototype = itemLibrary[tid];
+                // 我们调用 clone，并传入存档里的等级
+                Equipment* newItem = prototype->clone(prototype->getName(), lv);
+                // 这里可能需要扩展 setRarity 方法来恢复稀有度
+                result.push_back(newItem);
+            }
+        }
+        
+        // 加载装备配置
+        equippedArmorId = -1;
+        equippedWeaponIds.clear();
+        if (j.contains("equipment_config")) {
+            json equipConfig = j["equipment_config"];
+            equippedArmorId = equipConfig.value("armor_id", -1);
+            
+            if (equipConfig.contains("weapon_ids")) {
+                for (auto& weaponId : equipConfig["weapon_ids"]) {
+                    equippedWeaponIds.push_back(weaponId);
+                }
+            }
+        }
+        
+        cout << "[存档] 读取存档槽 " << slotIndex << " 成功！" << endl;
+        return result;
+    }
+    
+    // 4. 初始化所有存档槽位
+    static void initializeSaveSlots() {
+        // 首先确保 saves 文件夹存在
+        ensureSavesFolderExists();
+        
+        for (int i = 1; i <= 3; i++) {
+            string filename = "saves/save_slot_" + to_string(i) + ".json";
+            bool needsCreation = false;
+            
+            // 尝试打开并解析存档文件
+            ifstream checkFile(filename);
+            if (!checkFile.is_open()) {
+                // 文件不存在
+                needsCreation = true;
+                cout << "[系统] 存档槽 " << i << " 不存在，正在创建..." << endl;
+            } else {
+                // 文件存在，检查是否损坏
+                try {
+                    json j = json::parse(checkFile);
+                    checkFile.close();
+                    
+                    // 检查必要字段是否存在
+                    if (!j.contains("player_name") || !j.contains("exp") || !j.contains("inventory")) {
+                        cout << "[警告] 存档槽 " << i << " 损坏（缺少必要字段），正在重建..." << endl;
+                        needsCreation = true;
+                    }
+                } catch (json::parse_error& e) {
+                    // JSON 解析失败，文件损坏
+                    cout << "[警告] 存档槽 " << i << " 损坏（JSON 解析失败），正在重建..." << endl;
+                    checkFile.close();
+                    needsCreation = true;
+                } catch (...) {
+                    // 其他异常
+                    cout << "[警告] 存档槽 " << i << " 读取失败，正在重建..." << endl;
+                    checkFile.close();
+                    needsCreation = true;
+                }
+            }
+            
+            // 如果需要创建或重建，创建空存档
+            if (needsCreation) {
+                json emptySlot;
+                emptySlot["player_name"] = "";
+                emptySlot["exp"] = 0;
+                emptySlot["inventory"] = json::array();
+                emptySlot["equipment_config"] = {
+                    {"armor_id", -1},
+                    {"weapon_ids", json::array()}
+                };
+                
+                ofstream f(filename);
+                if (f.is_open()) {
+                    f << emptySlot.dump(4);
+                    f.close();
+                    cout << "[系统] 存档槽 " << i << " 已创建。" << endl;
+                } else {
+                    cout << "[错误] 无法创建存档槽 " << i << "！" << endl;
+                }
+            }
+        }
+    }
+    
+    // 5. 检查存档槽位是否为空
+    static bool isSlotEmpty(int slotIndex) {
+        string filename = "saves/save_slot_" + to_string(slotIndex) + ".json";
+        ifstream f(filename);
+        
+        if (!f.is_open()) {
+            return true;
+        }
+        
+        try {
+            json j = json::parse(f);
+            f.close();
+            
+            // 检查玩家名字是否为空
+            string playerName = j.value("player_name", "");
+            return playerName.empty();
+        } catch (json::parse_error& e) {
+            // 文件损坏，视为空存档
+            f.close();
+            cout << "[警告] 存档槽 " << slotIndex << " 损坏，视为空存档。" << endl;
+            return true;
+        } catch (...) {
+            f.close();
+            return true;
+        }
+    }
+    
+    // 6. 显示所有存档槽位信息
+    static void showSaveSlots() {
+        cout << "\n=== 存档槽位 ===" << endl;
+        for (int i = 1; i <= 3; i++) {
+            cout << "[" << i << "] 存档 " << i << " - ";
+            
+            if (isSlotEmpty(i)) {
+                cout << "空槽位" << endl;
+            } else {
+                try {
+                    string filename = "saves/save_slot_" + to_string(i) + ".json";
+                    ifstream f(filename);
+                    json j = json::parse(f);
+                    f.close();
+                    
+                    string playerName = j.value("player_name", "未知");
+                    int exp = j.value("exp", 0);
+                    int itemCount = j.contains("inventory") ? j["inventory"].size() : 0;
+                    
+                    cout << playerName << " (EXP: " << exp << ", 装备: " << itemCount << "件)" << endl;
+                } catch (json::parse_error& e) {
+                    cout << "损坏的存档（将在选择后自动修复）" << endl;
+                } catch (...) {
+                    cout << "无法读取（将在选择后自动修复）" << endl;
+                }
+            }
+        }
+        cout << "===================" << endl;
+    }
+    
+    // 静态成员变量需要在类外初始化
+    static void cleanUp() {
+        for(auto& pair : itemLibrary) delete pair.second;
+        itemLibrary.clear();
+    }
+};
+
+// 静态成员初始化
+map<int, Equipment*> SaveManager::itemLibrary;
+vector<Monster> SaveManager::monsterLibrary;
+
+#endif

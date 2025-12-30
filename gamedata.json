@@ -1,0 +1,568 @@
+{
+  "monsters": [
+    { "id": 1001, "name": "废铁史莱姆", "hp": 50, "atk": 5, "exp": 10 },
+    { "id": 1002, "name": "废土游荡者", "hp": 100, "atk": 15, "exp": 25 },
+    { "id": 1003, "name": "机械蜘蛛", "hp": 150, "atk": 20, "exp": 40 },
+    { "id": 1004, "name": "废铁守卫", "hp": 200, "atk": 25, "exp": 60 },
+    { "id": 1005, "name": "腐蚀机器人", "hp": 300, "atk": 35, "exp": 100 },
+    { "id": 1006, "name": "狂暴挖掘机", "hp": 500, "atk": 50, "exp": 150 },
+    { "id": 1007, "name": "泰坦哨兵", "hp": 800, "atk": 70, "exp": 250 }
+  ],
+  "equipments": [
+    { 
+      "id": 101, "type": "weapon", "name": "制式步枪", 
+      "rarity": "STANDARD", "faction": "共和国",
+      "atk": 50,
+      "crit_rate": 10,
+      "atk_speed": 2,
+      "weight": 3
+    },
+    { 
+      "id": 102, "type": "weapon", "name": "等离子光剑", 
+      "rarity": "MILITARY", "faction": "帝国",
+      "atk": 120, "crit_rate": 25, "atk_speed": 1, "weight": 5
+    },
+    { 
+      "id": 103, "type": "weapon", "name": "生锈的铁管", 
+      "rarity": "BROKEN", "faction": "废土",
+      "atk": 15, "crit_rate": 5, "atk_speed": 3, "weight": 2
+    },
+    {
+      "id": 104,
+      "type": "weapon",
+      "name": "传奇狙击炮",
+      "rarity": "LEGENDARY",
+      "faction": "共和国",
+      "atk": 300,
+      "crit_rate": 50,
+      "atk_speed": 5,
+      "weight": 8
+    },
+    {
+      "id": 105,
+      "type": "weapon",
+      "name": "加特林机枪",
+      "rarity": "MILITARY",
+      "faction": "帝国",
+      "atk": 100,
+      "crit_rate": 100,
+      "atk_speed": 1,
+      "weight": 12
+    },
+    {
+      "id": 106,
+      "type": "weapon",
+      "name": "猪",
+      "rarity": "LEGENDARY",
+      "faction": "猪",
+      "atk": 10000,
+      "crit_rate": 1,
+      "atk_speed": 7,
+      "weight": 20
+    },
+    {
+      "id": 107,
+      "type": "weapon",
+      "name": "左轮手枪",
+      "rarity": "BROKEN",
+      "faction": "废土",
+      "atk": 30,
+      "crit_rate": 30,
+      "atk_speed": 2,
+      "weight": 1
+    },
+    {
+      "id": 108,
+      "type": "weapon",
+      "name": "霰弹枪",
+      "rarity": "STANDARD",
+      "faction": "废土",
+      "atk": 40,
+      "crit_rate": 50,
+      "atk_speed": 3,
+      "weight": 4
+    },
+    {
+      "id": 109,
+      "type": "weapon",
+      "name": "卡宾枪",
+      "rarity": "STANDARD",
+      "faction": "废土",
+      "atk": 20,
+      "crit_rate": 15,
+      "atk_speed": 1,
+      "weight": 2
+    },
+    {
+      "id": 110,
+      "type": "weapon",
+      "name": "砍刀",
+      "rarity": "BROKEN",
+      "faction": "废土",
+      "atk": 10,
+      "crit_rate": 35,
+      "atk_speed": 1,
+      "weight": 1
+    },
+      {
+        "id": 111,
+        "type": "weapon",
+        "name": "巡逻手枪",
+        "rarity": "STANDARD",
+        "faction": "共和国",
+        "atk": 45,
+        "crit_rate": 12,
+        "atk_speed": 1,
+        "weight": 2
+      },
+      {
+        "id": 112,
+        "type": "weapon",
+        "name": "等离子步枪·改",
+        "rarity": "MILITARY",
+        "faction": "帝国",
+        "atk": 140,
+        "crit_rate": 20,
+        "atk_speed": 2,
+        "weight": 6
+      },
+      {
+        "id": 113,
+        "type": "weapon",
+        "name": "生锈匕首",
+        "rarity": "BROKEN",
+        "faction": "废土",
+        "atk": 18,
+        "crit_rate": 40,
+        "atk_speed": 1,
+        "weight": 1
+      },
+      {
+        "id": 114,
+        "type": "weapon",
+        "name": "燃烧喷枪",
+        "rarity": "STANDARD",
+        "faction": "废土",
+        "atk": 60,
+        "crit_rate": 8,
+        "atk_speed": 3,
+        "weight": 5
+      },
+      {
+        "id": 115,
+        "type": "weapon",
+        "name": "震荡炮",
+        "rarity": "MILITARY",
+        "faction": "共和国",
+        "atk": 180,
+        "crit_rate": 15,
+        "atk_speed": 4,
+        "weight": 9
+      },
+      {
+        "id": 116,
+        "type": "weapon",
+        "name": "投掷链锤",
+        "rarity": "BROKEN",
+        "faction": "废土",
+        "atk": 35,
+        "crit_rate": 5,
+        "atk_speed": 2,
+        "weight": 4
+      },
+      {
+        "id": 117,
+        "type": "weapon",
+        "name": "磁轨炮",
+        "rarity": "LEGENDARY",
+        "faction": "帝国",
+        "atk": 420,
+        "crit_rate": 30,
+        "atk_speed": 6,
+        "weight": 14
+      },
+      {
+        "id": 118,
+        "type": "weapon",
+        "name": "狩猎弓",
+        "rarity": "STANDARD",
+        "faction": "自然",
+        "atk": 55,
+        "crit_rate": 25,
+        "atk_speed": 2,
+        "weight": 3
+      },
+      {
+        "id": 119,
+        "type": "weapon",
+        "name": "破坏者链锯",
+        "rarity": "MILITARY",
+        "faction": "共和国",
+        "atk": 220,
+        "crit_rate": 18,
+        "atk_speed": 1,
+        "weight": 11
+      },
+    {
+      "id": 120,
+      "type": "weapon",
+      "name": "古代能量弓",
+      "rarity": "LEGENDARY",
+      "faction": "自然",
+      "atk": 360,
+      "crit_rate": 35,
+      "atk_speed": 4,
+      "weight": 7
+    },
+      {
+        "id": 121,
+        "type": "weapon",
+        "name": "匕首·刺客",
+        "rarity": "BROKEN",
+        "faction": "废土",
+        "atk": 12,
+        "crit_rate": 45,
+        "atk_speed": 1,
+        "weight": 1
+      },
+      {
+        "id": 122,
+        "type": "weapon",
+        "name": "短管猎枪",
+        "rarity": "STANDARD",
+        "faction": "废土",
+        "atk": 48,
+        "crit_rate": 30,
+        "atk_speed": 2,
+        "weight": 4
+      },
+      {
+        "id": 123,
+        "type": "weapon",
+        "name": "重型拦截炮",
+        "rarity": "MILITARY",
+        "faction": "共和国",
+        "atk": 190,
+        "crit_rate": 10,
+        "atk_speed": 4,
+        "weight": 10
+      },
+      {
+        "id": 124,
+        "type": "weapon",
+        "name": "破旧弯刀",
+        "rarity": "BROKEN",
+        "faction": "废土",
+        "atk": 22,
+        "crit_rate": 20,
+        "atk_speed": 1,
+        "weight": 2
+      },
+      {
+        "id": 125,
+        "type": "weapon",
+        "name": "高压电拳",
+        "rarity": "STANDARD",
+        "faction": "帝国",
+        "atk": 75,
+        "crit_rate": 8,
+        "atk_speed": 2,
+        "weight": 6
+      },
+      {
+        "id": 126,
+        "type": "weapon",
+        "name": "光学狙击枪",
+        "rarity": "MILITARY",
+        "faction": "帝国",
+        "atk": 260,
+        "crit_rate": 40,
+        "atk_speed": 5,
+        "weight": 9
+      },
+      {
+        "id": 127,
+        "type": "weapon",
+        "name": "断裂铁锤",
+        "rarity": "BROKEN",
+        "faction": "废土",
+        "atk": 40,
+        "crit_rate": 5,
+        "atk_speed": 3,
+        "weight": 6
+      },
+      {
+        "id": 128,
+        "type": "weapon",
+        "name": "掠夺者短弩",
+        "rarity": "STANDARD",
+        "faction": "废土",
+        "atk": 36,
+        "crit_rate": 22,
+        "atk_speed": 2,
+        "weight": 3
+      },
+      {
+        "id": 129,
+        "type": "weapon",
+        "name": "离子加农",
+        "rarity": "MILITARY",
+        "faction": "共和国",
+        "atk": 320,
+        "crit_rate": 28,
+        "atk_speed": 6,
+        "weight": 13
+      },
+      {
+        "id": 130,
+        "type": "weapon",
+        "name": "荒野刀刃",
+        "rarity": "STANDARD",
+        "faction": "废土",
+        "atk": 28,
+        "crit_rate": 18,
+        "atk_speed": 1,
+        "weight": 2
+      },
+      {
+        "id": 131,
+        "type": "weapon",
+        "name": "狂风手炮",
+        "rarity": "MILITARY",
+        "faction": "帝国",
+        "atk": 150,
+        "crit_rate": 12,
+        "atk_speed": 2,
+        "weight": 7
+      },
+      {
+        "id": 132,
+        "type": "weapon",
+        "name": "古铜战弓",
+        "rarity": "STANDARD",
+        "faction": "自然",
+        "atk": 65,
+        "crit_rate": 20,
+        "atk_speed": 3,
+        "weight": 5
+      },
+      {
+        "id": 133,
+        "type": "weapon",
+        "name": "裂地锯斧",
+        "rarity": "BROKEN",
+        "faction": "废土",
+        "atk": 55,
+        "crit_rate": 6,
+        "atk_speed": 4,
+        "weight": 9
+      },
+      {
+        "id": 134,
+        "type": "weapon",
+        "name": "天穹电弧枪",
+        "rarity": "LEGENDARY",
+        "faction": "共和国",
+        "atk": 480,
+        "crit_rate": 22,
+        "atk_speed": 7,
+        "weight": 15
+      },
+      {
+        "id": 135,
+        "type": "weapon",
+        "name": "幽影短剑",
+        "rarity": "STANDARD",
+        "faction": "废土",
+        "atk": 34,
+        "crit_rate": 33,
+        "atk_speed": 1,
+        "weight": 1
+      },
+      {
+        "id": 136,
+        "type": "weapon",
+        "name": "重装榴弹发射器",
+        "rarity": "MILITARY",
+        "faction": "共和国",
+        "atk": 280,
+        "crit_rate": 5,
+        "atk_speed": 5,
+        "weight": 12
+      },
+      {
+        "id": 137,
+        "type": "weapon",
+        "name": "祭礼长弓",
+        "rarity": "LEGENDARY",
+        "faction": "自然",
+        "atk": 340,
+        "crit_rate": 30,
+        "atk_speed": 3,
+        "weight": 6
+      },
+      {
+        "id": 138,
+        "type": "weapon",
+        "name": "回旋投枪",
+        "rarity": "STANDARD",
+        "faction": "自然",
+        "atk": 52,
+        "crit_rate": 14,
+        "atk_speed": 2,
+        "weight": 3
+      },
+      {
+        "id": 139,
+        "type": "weapon",
+        "name": "电磁冲击锤",
+        "rarity": "MILITARY",
+        "faction": "帝国",
+        "atk": 200,
+        "crit_rate": 9,
+        "atk_speed": 4,
+        "weight": 10
+      },
+      {
+        "id": 140,
+        "type": "weapon",
+        "name": "残破火把",
+        "rarity": "BROKEN",
+        "faction": "废土",
+        "atk": 8,
+        "crit_rate": 2,
+        "atk_speed": 1,
+        "weight": 1
+      },
+      {
+        "id": 141,
+        "type": "weapon",
+        "name": "军用刺刀",
+        "rarity": "STANDARD",
+        "faction": "共和国",
+        "atk": 60,
+        "crit_rate": 16,
+        "atk_speed": 1,
+        "weight": 3
+      },
+      {
+        "id": 142,
+        "type": "weapon",
+        "name": "深渊切割器",
+        "rarity": "LEGENDARY",
+        "faction": "帝国",
+        "atk": 520,
+        "crit_rate": 28,
+        "atk_speed": 8,
+        "weight": 18
+      },
+      {
+        "id": 143,
+        "type": "weapon",
+        "name": "猎户手弩",
+        "rarity": "STANDARD",
+        "faction": "自然",
+        "atk": 58,
+        "crit_rate": 19,
+        "atk_speed": 2,
+        "weight": 4
+      },
+      {
+        "id": 144,
+        "type": "weapon",
+        "name": "废铁链枪",
+        "rarity": "BROKEN",
+        "faction": "废土",
+        "atk": 44,
+        "crit_rate": 7,
+        "atk_speed": 3,
+        "weight": 8
+      },
+      {
+        "id": 145,
+        "type": "weapon",
+        "name": "寂静狙击",
+        "rarity": "MILITARY",
+        "faction": "帝国",
+        "atk": 300,
+        "crit_rate": 45,
+        "atk_speed": 6,
+        "weight": 9
+      },
+      {
+        "id": 146,
+        "type": "weapon",
+        "name": "风暴链刃",
+        "rarity": "MILITARY",
+        "faction": "共和国",
+        "atk": 210,
+        "crit_rate": 20,
+        "atk_speed": 2,
+        "weight": 10
+      },
+      {
+        "id": 147,
+        "type": "weapon",
+        "name": "森林守护者弯刀",
+        "rarity": "STANDARD",
+        "faction": "自然",
+        "atk": 70,
+        "crit_rate": 24,
+        "atk_speed": 1,
+        "weight": 4
+      },
+      {
+        "id": 148,
+        "type": "weapon",
+        "name": "古代毁灭者",
+        "rarity": "LEGENDARY",
+        "faction": "共和国",
+        "atk": 640,
+        "crit_rate": 12,
+        "atk_speed": 10,
+        "weight": 22
+      },
+      {
+        "id": 149,
+        "type": "weapon",
+        "name": "夜行者短刃",
+        "rarity": "BROKEN",
+        "faction": "废土",
+        "atk": 26,
+        "crit_rate": 38,
+        "atk_speed": 1,
+        "weight": 1
+      },
+    {
+      "id": 150,
+      "type": "weapon",
+      "name": "星陨导弹发射器",
+      "rarity": "LEGENDARY",
+      "faction": "帝国",
+      "atk": 720,
+      "crit_rate": 40,
+      "atk_speed": 12,
+      "weight": 25
+    },
+    { 
+      "id": 201, "type": "armor", "name": "皮革背心", 
+      "rarity": "STANDARD", "faction": "帝国",
+      "hp": 200, "dodge_rate": 10, "capacity": 10
+    },
+    { 
+      "id": 202, "type": "armor", "name": "反应堆外壳", 
+      "rarity": "MILITARY", "faction": "共和国",
+      "hp": 500, "dodge_rate": 15, "capacity": 15
+    },
+    { 
+      "id": 203, "type": "armor", "name": "破损铁甲", 
+      "rarity": "BROKEN", "faction": "废土",
+      "hp": 100, "dodge_rate": 5, "capacity": 5
+    },
+    { 
+      "id": 204, "type": "armor", "name": "泰坦机甲", 
+      "rarity": "LEGENDARY", "faction": "帝国",
+      "hp": 1000, "dodge_rate": 25, "capacity": 20
+    }
+  ]
+}

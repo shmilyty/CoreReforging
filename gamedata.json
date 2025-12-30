@@ -12,7 +12,10 @@
     { 
       "id": 101, "type": "weapon", "name": "制式步枪", 
       "rarity": "STANDARD", "faction": "共和国",
-      "atk": 50, "crit_rate": 10, "atk_speed": 2, "weight": 3
+      "atk": 50,
+      "crit_rate": 10,
+      "atk_speed": 2,
+      "weight": 3
     },
     { 
       "id": 102, "type": "weapon", "name": "等离子光剑", 
@@ -45,6 +48,61 @@
       "crit_rate": 100,
       "atk_speed": 1,
       "weight": 12
+    },
+    {
+      "id": 106,
+      "type": "weapon",
+      "name": "猪",
+      "rarity": "LEGENDARY",
+      "faction": "自然",
+      "atk": 10000,
+      "crit_rate": 1,
+      "atk_speed": 7,
+      "weight": 20
+    },
+    {
+      "id": 107,
+      "type": "weapon",
+      "name": "左轮手枪",
+      "rarity": "BROKEN",
+      "faction": "废土",
+      "atk": 30,
+      "crit_rate": 30,
+      "atk_speed": 2,
+      "weight": 1
+    },
+    {
+      "id": 108,
+      "type": "weapon",
+      "name": "霰弹枪",
+      "rarity": "STANDARD",
+      "faction": "废土",
+      "atk": 40,
+      "crit_rate": 50,
+      "atk_speed": 3,
+      "weight": 4
+    },
+    {
+      "id": 109,
+      "type": "weapon",
+      "name": "卡宾枪",
+      "rarity": "STANDARD",
+      "faction": "废土",
+      "atk": 20,
+      "crit_rate": 15,
+      "atk_speed": 1,
+      "weight": 2
+    },
+    {
+      "id": 110,
+      "type": "weapon",
+      "name": "砍刀",
+      "rarity": "BROKEN",
+      "faction": "废土",
+      "atk": 10,
+      "crit_rate": 35,
+      "atk_speed": 1,
+      "weight": 1
     },
     { 
       "id": 201, "type": "armor", "name": "皮革背心", 

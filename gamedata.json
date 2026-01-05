@@ -1,12 +1,441 @@
 {
   "monsters": [
-    { "id": 1001, "name": "废铁史莱姆", "hp": 50, "atk": 5, "exp": 10 },
-    { "id": 1002, "name": "废土游荡者", "hp": 100, "atk": 15, "exp": 25 },
-    { "id": 1003, "name": "机械蜘蛛", "hp": 150, "atk": 20, "exp": 40 },
-    { "id": 1004, "name": "废铁守卫", "hp": 200, "atk": 25, "exp": 60 },
-    { "id": 1005, "name": "腐蚀机器人", "hp": 300, "atk": 35, "exp": 100 },
-    { "id": 1006, "name": "狂暴挖掘机", "hp": 500, "atk": 50, "exp": 150 },
-    { "id": 1007, "name": "泰坦哨兵", "hp": 800, "atk": 70, "exp": 250 }
+    {
+      "id": 1001,
+      "name": "废铁史莱姆",
+      "hp": 50,
+      "atk": 5,
+      "exp": 10
+    },
+    {
+      "id": 1002,
+      "name": "废土游荡者",
+      "hp": 100,
+      "atk": 15,
+      "exp": 25
+    },
+    {
+      "id": 1003,
+      "name": "机械蜘蛛",
+      "hp": 150,
+      "atk": 20,
+      "exp": 40
+    },
+    {
+      "id": 1004,
+      "name": "废铁守卫",
+      "hp": 200,
+      "atk": 25,
+      "exp": 60
+    },
+    {
+      "id": 1005,
+      "name": "腐蚀机器人",
+      "hp": 300,
+      "atk": 35,
+      "exp": 100
+    },
+    {
+      "id": 1006,
+      "name": "狂暴挖掘机",
+      "hp": 500,
+      "atk": 50,
+      "exp": 150
+    },
+    {
+      "id": 1007,
+      "name": "泰坦哨兵",
+      "hp": 800,
+      "atk": 70,
+      "exp": 250
+    },
+
+    {
+      "id": 2001,
+      "name": "腐蚀蠕虫",
+      "hp": 70,
+      "atk": 8,
+      "exp": 12
+    },
+    {
+      "id": 2002,
+      "name": "变异野狗",
+      "hp": 90,
+      "atk": 12,
+      "exp": 18
+    },
+    {
+      "id": 2003,
+      "name": "辐射甲虫",
+      "hp": 60,
+      "atk": 10,
+      "exp": 15
+    },
+    {
+      "id": 2004,
+      "name": "拾荒者匪徒",
+      "hp": 120,
+      "atk": 18,
+      "exp": 28
+    },
+    {
+      "id": 2005,
+      "name": "废弃侦察机",
+      "hp": 130,
+      "atk": 22,
+      "exp": 35
+    },
+    {
+      "id": 2006,
+      "name": "毒液爬行者",
+      "hp": 85,
+      "atk": 14,
+      "exp": 20
+    },
+    {
+      "id": 2007,
+      "name": "狂怒收割者",
+      "hp": 180,
+      "atk": 30,
+      "exp": 45
+    },
+    {
+      "id": 2008,
+      "name": "电子幽魂",
+      "hp": 95,
+      "atk": 16,
+      "exp": 22
+    },
+    {
+      "id": 2009,
+      "name": "废料巨人",
+      "hp": 250,
+      "atk": 40,
+      "exp": 70
+    },
+    {
+      "id": 2010,
+      "name": "锈蚀猎犬",
+      "hp": 110,
+      "atk": 20,
+      "exp": 30
+    },
+    {
+      "id": 2011,
+      "name": "自动炮台",
+      "hp": 140,
+      "atk": 25,
+      "exp": 38
+    },
+    {
+      "id": 2012,
+      "name": "辐射秃鹫",
+      "hp": 80,
+      "atk": 11,
+      "exp": 17
+    },
+    {
+      "id": 2013,
+      "name": "机械蝎子",
+      "hp": 160,
+      "atk": 28,
+      "exp": 42
+    },
+    {
+      "id": 2014,
+      "name": "变异巨鼠",
+      "hp": 65,
+      "atk": 9,
+      "exp": 14
+    },
+    {
+      "id": 2015,
+      "name": "废弃坦克残骸",
+      "hp": 350,
+      "atk": 45,
+      "exp": 90
+    },
+    {
+      "id": 2016,
+      "name": "电击水母",
+      "hp": 100,
+      "atk": 19,
+      "exp": 26
+    },
+    {
+      "id": 2017,
+      "name": "拾荒者头目",
+      "hp": 220,
+      "atk": 35,
+      "exp": 55
+    },
+    {
+      "id": 2018,
+      "name": "腐蚀飞龙",
+      "hp": 280,
+      "atk": 42,
+      "exp": 75
+    },
+    {
+      "id": 2019,
+      "name": "幽灵步兵",
+      "hp": 130,
+      "atk": 24,
+      "exp": 32
+    },
+    {
+      "id": 2020,
+      "name": "辐射巨蚁",
+      "hp": 150,
+      "atk": 26,
+      "exp": 36
+    },
+    {
+      "id": 2021,
+      "name": "机械鹰",
+      "hp": 115,
+      "atk": 21,
+      "exp": 29
+    },
+    {
+      "id": 2022,
+      "name": "废土暴徒",
+      "hp": 190,
+      "atk": 32,
+      "exp": 48
+    },
+    {
+      "id": 2023,
+      "name": "腐蚀树精",
+      "hp": 200,
+      "atk": 28,
+      "exp": 50
+    },
+    {
+      "id": 2024,
+      "name": "自爆机器人",
+      "hp": 50,
+      "atk": 40,
+      "exp": 25
+    },
+    {
+      "id": 2025,
+      "name": "变异毒蛛",
+      "hp": 170,
+      "atk": 30,
+      "exp": 44
+    },
+    {
+      "id": 2026,
+      "name": "废弃机甲",
+      "hp": 400,
+      "atk": 55,
+      "exp": 110
+    },
+    {
+      "id": 2027,
+      "name": "辐射鳄鱼",
+      "hp": 240,
+      "atk": 38,
+      "exp": 65
+    },
+    {
+      "id": 2028,
+      "name": "拾荒者狙击手",
+      "hp": 140,
+      "atk": 34,
+      "exp": 40
+    },
+    {
+      "id": 2029,
+      "name": "机械蜈蚣",
+      "hp": 210,
+      "atk": 36,
+      "exp": 58
+    },
+    {
+      "id": 2030,
+      "name": "腐蚀泥怪",
+      "hp": 180,
+      "atk": 25,
+      "exp": 46
+    },
+    {
+      "id": 2031,
+      "name": "废土狼王",
+      "hp": 260,
+      "atk": 44,
+      "exp": 80
+    },
+    {
+      "id": 2032,
+      "name": "自动哨戒炮",
+      "hp": 120,
+      "atk": 29,
+      "exp": 34
+    },
+    {
+      "id": 2033,
+      "name": "辐射巨蟒",
+      "hp": 320,
+      "atk": 48,
+      "exp": 95
+    },
+    {
+      "id": 2034,
+      "name": "机械猛犸",
+      "hp": 600,
+      "atk": 60,
+      "exp": 130
+    },
+    {
+      "id": 2035,
+      "name": "拾荒者重甲兵",
+      "hp": 280,
+      "atk": 42,
+      "exp": 72
+    },
+    {
+      "id": 2036,
+      "name": "幽灵战机",
+      "hp": 180,
+      "atk": 38,
+      "exp": 54
+    },
+    {
+      "id": 2037,
+      "name": "腐蚀巨像",
+      "hp": 450,
+      "atk": 58,
+      "exp": 120
+    },
+    {
+      "id": 2038,
+      "name": "变异犀牛",
+      "hp": 380,
+      "atk": 52,
+      "exp": 105
+    },
+    {
+      "id": 2039,
+      "name": "废弃战舰残骸",
+      "hp": 700,
+      "atk": 65,
+      "exp": 140
+    },
+    {
+      "id": 2040,
+      "name": "辐射秃鹫王",
+      "hp": 220,
+      "atk": 46,
+      "exp": 78
+    },
+    {
+      "id": 2041,
+      "name": "机械暴君",
+      "hp": 550,
+      "atk": 70,
+      "exp": 160
+    },
+    {
+      "id": 2042,
+      "name": "拾荒者巫师",
+      "hp": 160,
+      "atk": 32,
+      "exp": 52
+    },
+    {
+      "id": 2043,
+      "name": "腐蚀泰坦",
+      "hp": 900,
+      "atk": 80,
+      "exp": 20
+    },
+    {
+      "id": 2044,
+      "name": "虚空潜伏者",
+      "hp": 320,
+      "atk": 55,
+      "exp": 115
+    },
+    {
+      "id": 2045,
+      "name": "废钢吞噬者",
+      "hp": 480,
+      "atk": 62,
+      "exp": 135
+    },
+    {
+      "id": 2046,
+      "name": "辐射君王",
+      "hp": 850,
+      "atk": 75,
+      "exp": 180
+    },
+    {
+      "id": 2047,
+      "name": "量子蠕变体",
+      "hp": 210,
+      "atk": 47,
+      "exp": 85
+    },
+    {
+      "id": 2048,
+      "name": "锈蚀缝合怪",
+      "hp": 370,
+      "atk": 58,
+      "exp": 125
+    },
+    {
+      "id": 2049,
+      "name": "数据幽灵",
+      "hp": 180,
+      "atk": 41,
+      "exp": 68
+    },
+    {
+      "id": 2050,
+      "name": "废土巨像",
+      "hp": 950,
+      "atk": 82,
+      "exp": 210
+    },
+
+    {
+      "id": 3001,
+      "name": "智械突击兵",
+      "hp": 240,
+      "atk": 40,
+      "exp": 68
+    },
+    {
+      "id": 3002,
+      "name": "机械蜂群",
+      "hp": 80,
+      "atk": 28,
+      "exp": 35
+    },
+    {
+      "id": 3003,
+      "name": "重装粉碎者",
+      "hp": 520,
+      "atk": 55,
+      "exp": 140
+    },
+    {
+      "id": 3004,
+      "name": "光学迷彩猎手",
+      "hp": 190,
+      "atk": 46,
+      "exp": 72
+    },
+    {
+      "id": 3005,
+      "name": "堡垒防御者",
+      "hp": 680,
+      "atk": 38,
+      "exp": 155
+    }
   ],
   "equipments": [
     { 
@@ -563,6 +992,412 @@
       "id": 204, "type": "armor", "name": "泰坦机甲", 
       "rarity": "LEGENDARY", "faction": "帝国",
       "hp": 1000, "dodge_rate": 25, "capacity": 20
+    },
+    {
+      "id": 205, "type": "armor", "name": "轻型护甲", "rarity": "BROKEN", "faction": "废土",
+      "hp": 80, "dodge_rate": 6, "capacity": 4
+    },
+    {
+      "id": 206, "type": "armor", "name": "强化背心", "rarity": "STANDARD", "faction": "共和国",
+      "hp": 220, "dodge_rate": 12, "capacity": 9
+    },
+    {
+      "id": 207, "type": "armor", "name": "战术外壳", "rarity": "MILITARY", "faction": "帝国",
+      "hp": 420, "dodge_rate": 14, "capacity": 14
+    },
+    {
+      "id": 208, "type": "armor", "name": "断裂护胸", "rarity": "BROKEN", "faction": "废土",
+      "hp": 120, "dodge_rate": 4, "capacity": 5
+    },
+    {
+      "id": 209, "type": "armor", "name": "半重甲", "rarity": "STANDARD", "faction": "共和国",
+      "hp": 300, "dodge_rate": 11, "capacity": 11
+    },
+    {
+      "id": 210, "type": "armor", "name": "装甲外骨骼", "rarity": "MILITARY", "faction": "共和国",
+      "hp": 600, "dodge_rate": 16, "capacity": 16
+    },
+    {
+      "id": 211, "type": "armor", "name": "锈蚀护具", "rarity": "BROKEN", "faction": "废土",
+      "hp": 90, "dodge_rate": 3, "capacity": 3
+    },
+    {
+      "id": 212, "type": "armor", "name": "城市巡逻甲", "rarity": "STANDARD", "faction": "帝国",
+      "hp": 240, "dodge_rate": 9, "capacity": 8
+    },
+    {
+      "id": 213, "type": "armor", "name": "前线堡垒", "rarity": "MILITARY", "faction": "共和国",
+      "hp": 520, "dodge_rate": 13, "capacity": 15
+    },
+    {
+      "id": 214,
+      "type": "armor",
+      "name": "残骸护胸",
+      "rarity": "BROKEN",
+      "faction": "废土",
+      "hp": 110,
+      "dodge_rate": 5,
+      "capacity": 4
+    },
+    {
+      "id": 215,
+      "type": "armor",
+      "name": "猎手迷彩甲",
+      "rarity": "STANDARD",
+      "faction": "废土",
+      "hp": 260,
+      "dodge_rate": 14,
+      "capacity": 10
+    },
+    {
+      "id": 216,
+      "type": "armor",
+      "name": "动能盾壳",
+      "rarity": "MILITARY",
+      "faction": "帝国",
+      "hp": 680,
+      "dodge_rate": 12,
+      "capacity": 17
+    },
+    {
+      "id": 217,
+      "type": "armor",
+      "name": "裂缝胸甲",
+      "rarity": "BROKEN",
+      "faction": "废土",
+      "hp": 95,
+      "dodge_rate": 6,
+      "capacity": 5
+    },
+    {
+      "id": 218,
+      "type": "armor",
+      "name": "游骑甲衣",
+      "rarity": "STANDARD",
+      "faction": "废土",
+      "hp": 210,
+      "dodge_rate": 10,
+      "capacity": 9
+    },
+    {
+      "id": 219,
+      "type": "armor",
+      "name": "镀钛护甲",
+      "rarity": "MILITARY",
+      "faction": "共和国",
+      "hp": 550,
+      "dodge_rate": 15,
+      "capacity": 15
+    },
+    {
+      "id": 220,
+      "type": "armor",
+      "name": "古旧战铠",
+      "rarity": "BROKEN",
+      "faction": "废土",
+      "hp": 130,
+      "dodge_rate": 4,
+      "capacity": 6
+    },
+    {
+      "id": 221,
+      "type": "armor",
+      "name": "远征甲",
+      "rarity": "STANDARD",
+      "faction": "共和国",
+      "hp": 320,
+      "dodge_rate": 13,
+      "capacity": 12
+    },
+    {
+      "id": 222,
+      "type": "armor",
+      "name": "指挥官护壳",
+      "rarity": "MILITARY",
+      "faction": "帝国",
+      "hp": 720,
+      "dodge_rate": 18,
+      "capacity": 18
+    },
+    {
+      "id": 223,
+      "type": "armor",
+      "name": "漂泊者裹甲",
+      "rarity": "BROKEN",
+      "faction": "废土",
+      "hp": 85,
+      "dodge_rate": 7,
+      "capacity": 4
+    },
+    {
+      "id": 224,
+      "type": "armor",
+      "name": "防爆背甲",
+      "rarity": "STANDARD",
+      "faction": "帝国",
+      "hp": 270,
+      "dodge_rate": 8,
+      "capacity": 10
+    },
+    {
+      "id": 225,
+      "type": "armor",
+      "name": "战地隔离层",
+      "rarity": "MILITARY",
+      "faction": "共和国",
+      "hp": 480,
+      "dodge_rate": 14,
+      "capacity": 13
+    },
+    {
+      "id": 226,
+      "type": "armor",
+      "name": "破布护胸",
+      "rarity": "BROKEN",
+      "faction": "废土",
+      "hp": 70,
+      "dodge_rate": 2,
+      "capacity": 3
+    },
+    {
+      "id": 227,
+      "type": "armor",
+      "name": "巡逻短甲",
+      "rarity": "STANDARD",
+      "faction": "废土",
+      "hp": 200,
+      "dodge_rate": 9,
+      "capacity": 7
+    },
+    {
+      "id": 228,
+      "type": "armor",
+      "name": "能量屏障甲",
+      "rarity": "MILITARY",
+      "faction": "帝国",
+      "hp": 640,
+      "dodge_rate": 17,
+      "capacity": 16
+    },
+    {
+      "id": 229,
+      "type": "armor",
+      "name": "磨损护具",
+      "rarity": "BROKEN",
+      "faction": "废土",
+      "hp": 105,
+      "dodge_rate": 5,
+      "capacity": 5
+    },
+    {
+      "id": 230,
+      "type": "armor",
+      "name": "医疗支援甲",
+      "rarity": "STANDARD",
+      "faction": "共和国",
+      "hp": 290,
+      "dodge_rate": 11,
+      "capacity": 11
+    },
+    {
+      "id": 231,
+      "type": "armor",
+      "name": "斥候外壳",
+      "rarity": "STANDARD",
+      "faction": "废土",
+      "hp": 230,
+      "dodge_rate": 16,
+      "capacity": 9
+    },
+    {
+      "id": 232,
+      "type": "armor",
+      "name": "动能反射甲",
+      "rarity": "MILITARY",
+      "faction": "共和国",
+      "hp": 700,
+      "dodge_rate": 12,
+      "capacity": 17
+    },
+    {
+      "id": 233,
+      "type": "armor",
+      "name": "遗弃装甲",
+      "rarity": "BROKEN",
+      "faction": "废土",
+      "hp": 115,
+      "dodge_rate": 6,
+      "capacity": 6
+    },
+    {
+      "id": 234,
+      "type": "armor",
+      "name": "先锋护甲",
+      "rarity": "STANDARD",
+      "faction": "帝国",
+      "hp": 340,
+      "dodge_rate": 10,
+      "capacity": 12
+    },
+    {
+      "id": 235,
+      "type": "armor",
+      "name": "指挥甲胄",
+      "rarity": "MILITARY",
+      "faction": "共和国",
+      "hp": 760,
+      "dodge_rate": 15,
+      "capacity": 18
+    },
+    {
+      "id": 236,
+      "type": "armor",
+      "name": "禁区钝甲",
+      "rarity": "BROKEN",
+      "faction": "废土",
+      "hp": 125,
+      "dodge_rate": 3,
+      "capacity": 6
+    },
+    {
+      "id": 237,
+      "type": "armor",
+      "name": "精英护甲",
+      "rarity": "MILITARY",
+      "faction": "帝国",
+      "hp": 820,
+      "dodge_rate": 19,
+      "capacity": 19
+    },
+    {
+      "id": 238,
+      "type": "armor",
+      "name": "古战士胸甲",
+      "rarity": "LEGENDARY",
+      "faction": "共和国",
+      "hp": 1200,
+      "dodge_rate": 22,
+      "capacity": 22
+    },
+    {
+      "id": 239,
+      "type": "armor",
+      "name": "星陨战装",
+      "rarity": "LEGENDARY",
+      "faction": "帝国",
+      "hp": 1400,
+      "dodge_rate": 24,
+      "capacity": 24
+    },
+    {
+      "id": 240,
+      "type": "armor",
+      "name": "遗迹守护甲",
+      "rarity": "LEGENDARY",
+      "faction": "废土",
+      "hp": 1100,
+      "dodge_rate": 20,
+      "capacity": 20
+    },
+    {
+      "id": 241,
+      "type": "armor",
+      "name": "战神铠甲",
+      "rarity": "LEGENDARY",
+      "faction": "共和国",
+      "hp": 1600,
+      "dodge_rate": 30,
+      "capacity": 26
+    },
+    {
+      "id": 242,
+      "type": "armor",
+      "name": "掠夺者外甲",
+      "rarity": "STANDARD",
+      "faction": "废土",
+      "hp": 280,
+      "dodge_rate": 12,
+      "capacity": 10
+    },
+    {
+      "id": 243,
+      "type": "armor",
+      "name": "密探轻甲",
+      "rarity": "STANDARD",
+      "faction": "帝国",
+      "hp": 210,
+      "dodge_rate": 17,
+      "capacity": 8
+    },
+    {
+      "id": 244,
+      "type": "armor",
+      "name": "炼钢胸甲",
+      "rarity": "MILITARY",
+      "faction": "共和国",
+      "hp": 900,
+      "dodge_rate": 14,
+      "capacity": 20
+    },
+    {
+      "id": 245,
+      "type": "armor",
+      "name": "幽影护具",
+      "rarity": "LEGENDARY",
+      "faction": "废土",
+      "hp": 1300,
+      "dodge_rate": 28,
+      "capacity": 23
+    },
+    {
+      "id": 246,
+      "type": "armor",
+      "name": "远古守护甲",
+      "rarity": "LEGENDARY",
+      "faction": "共和国",
+      "hp": 1800,
+      "dodge_rate": 35,
+      "capacity": 30
+    },
+    {
+      "id": 247,
+      "type": "armor",
+      "name": "侦察护甲",
+      "rarity": "STANDARD",
+      "faction": "废土",
+      "hp": 195,
+      "dodge_rate": 15,
+      "capacity": 7
+    },
+    {
+      "id": 248,
+      "type": "armor",
+      "name": "重装阻能甲",
+      "rarity": "MILITARY",
+      "faction": "帝国",
+      "hp": 980,
+      "dodge_rate": 13,
+      "capacity": 21
+    },
+    {
+      "id": 249,
+      "type": "armor",
+      "name": "破碎战袍",
+      "rarity": "BROKEN",
+      "faction": "废土",
+      "hp": 140,
+      "dodge_rate": 5,
+      "capacity": 6
+    },
+    {
+      "id": 250,
+      "type": "armor",
+      "name": "终极守卫甲",
+      "rarity": "LEGENDARY",
+      "faction": "帝国",
+      "hp": 1500,
+      "dodge_rate": 27,
+      "capacity": 25
     }
   ]
 }
